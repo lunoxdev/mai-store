@@ -11,8 +11,7 @@ export default async function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center">
-
+    <main className="flex flex-col items-center">
       <section className="my-5 sm:my-10 w-full max-w-5xl grid grid-cols-2 sm:grid-cols-3 gap-4 p-3">
         {products?.map((product: Product) => (
           <ProductCard key={product.id} product={product} />
