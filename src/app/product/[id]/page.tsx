@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
-import type { Product } from "@/types/product";
+import { type Product } from "@/types/product";
 import ProductCard from "@/components/ProductCard";
+import AddToCartButton from "@/components/AddToCartButton";
 
 interface PageProps {
     params: {
@@ -13,6 +14,7 @@ interface PageProps {
 export default async function Page({ params: resolvedParams }: { params: Promise<{ id: string }> }) {
     const params = await resolvedParams;
     const id = params.id;
+
     const { data: product, error } = await supabase
         .from("products")
         .select("*")
@@ -63,9 +65,7 @@ export default async function Page({ params: resolvedParams }: { params: Promise
                         <p className="mt-2 text-red-500 sm:text-xl">Out of stock</p>
                     )}
                     <div className="mt-6 flex items-center">
-                        <button className="flex items-center justify-center rounded-md bg-blue-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-blue-700">
-                            Add To Cart
-                        </button>
+                        <AddToCartButton product={product} />
                     </div>
                 </div>
             </div>
