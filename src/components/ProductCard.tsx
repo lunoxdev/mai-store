@@ -1,5 +1,6 @@
 import type { Product } from '../types/product';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface ProductCardProps {
     product: Product;
@@ -7,7 +8,10 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
     return (
-        <div className="group rounded-lg border border-transparent relative h-48 sm:h-60 cursor-pointer overflow-hidden">
+        <Link
+            href={`/product/${product.handle}`}
+            className="group rounded-lg border border-transparent relative h-48 sm:h-60 cursor-pointer overflow-hidden"
+        >
             {product.images.length > 0 && (
                 <Image
                     src={product.images[0].url}
@@ -24,6 +28,6 @@ export default function ProductCard({ product }: ProductCardProps) {
                     ₡{parseFloat(product.price)}
                 </p>
             </div>
-        </div>
+        </Link>
     );
 }
