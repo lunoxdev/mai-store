@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import CartSidebar from "@/components/CartSidebar";
 
@@ -13,7 +14,9 @@ export default function Header() {
 
     return (
         <header className="flex justify-between items-center p-4">
-            <h1 className="text-2xl font-bold">Mai Store</h1>
+            <Link href="/">
+                <h1 className="text-2xl font-bold">Mai Store</h1>
+            </Link>
             <div className="relative cursor-pointer" onClick={openCart}>
                 {/* SVG Shopping icon */}
                 <svg
