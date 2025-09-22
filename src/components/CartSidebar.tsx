@@ -2,6 +2,9 @@
 
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
+import { createClient } from "@/utils/supabase/client";
+import { Session } from "@supabase/supabase-js";
+import { useState, useEffect } from "react";
 
 interface CartSidebarProps {
     isOpen: boolean;
@@ -10,6 +13,49 @@ interface CartSidebarProps {
 
 export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
     const { cartItems, removeFromCart, updateQuantity, cartTotal } = useCart();
+    const [session, setSession] = useState<Session | null>(null);
+    const supabase = createClient();
+    const [comprobanteNumber, setComprobanteNumber] = useState("");
+
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setSession(session);
+        });
+
+        const { data: authListener } = supabase.auth.onAuthStateChange(
+            (event, session) => {
+                setSession(session);
+            }
+        );
+
+        return () => {
+            authListener.subscription.unsubscribe();
+        };
+    }, []);
+
+    const handleConfirmOrder = () => {
+        const phoneNumber = "50672829018"; // WhatsApp number without '+'
+        const orderDetails = cartItems
+            .map((item) => `${item.name} (x${item.quantity}) - ₡${parseFloat(item.price) * item.quantity}`)
+            .join("\n");
+        const message = `¡Hola! Me gustaría confirmar mi pedido:\n\n${orderDetails}\n\nTotal: ₡${cartTotal}\nNúmero de Comprobante: ${comprobanteNumber}\n\n¡Gracias!`;
+        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+            message
+        )}`;
+        window.open(whatsappUrl, "_blank");
+    };
+
+    const handleLogin = async () => {
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: "google",
+            options: {
+                redirectTo: `${window.location.origin}/auth/callback`,
+            },
+        });
+        if (error) {
+            console.error("Error logging in with Google:", error);
+        }
+    };
 
     const sidebarClasses = `fixed inset-y-0 right-0 z-50 w-screen max-w-md transform transition-transform duration-500 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"
         }`;
@@ -195,16 +241,28 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                                     type="text"
                                     placeholder="Número de comprobante"
                                     className="mt-2 w-full p-2 rounded-md border bg-gray-800/40 border-gray-600 outline-none"
+                                    value={comprobanteNumber}
+                                    onChange={(e) => setComprobanteNumber(e.target.value)}
                                 />
                             </div>
                         </div>
                         <div className="mt-6">
-                            <a
-                                href="#"
-                                className="flex items-center justify-center rounded-md border border-transparent bg-green-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-green-700"
-                            >
-                                Confirmar Pedido y Enviar
-                            </a>
+                            {session ? (
+                                <button
+                                    onClick={handleConfirmOrder}
+                                    disabled={!comprobanteNumber.trim()}
+                                    className="flex items-center justify-center rounded-md border border-transparent bg-green-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-green-700 w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    Confirmar Pedido y Enviar
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={handleLogin}
+                                    className="flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-blue-700 w-full"
+                                >
+                                    Iniciar sesión para confirmar el pedido
+                                </button>
+                            )}
                         </div>
                     </div>
                 </section>
