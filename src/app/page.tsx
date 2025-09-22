@@ -4,13 +4,16 @@ import { supabase } from '../lib/supabase';
 import { Product } from '../types/product';
 import ProductCard from '../components/ProductCard';
 import SearchBar from '../components/SearchBar';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [error, setError] = useState<string | null>(null);
+
+  const productGridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -30,6 +33,16 @@ export default function Home() {
     fetchProducts();
   }, []);
 
+  useEffect(() => {
+    if (products.length > 0 && productGridRef.current) {
+      gsap.fromTo(
+        productGridRef.current.children,
+        { opacity: 0, y: 50, scale: 0.8 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.7, stagger: 0.08, ease: "back.out(1.7)" },
+      );
+    }
+  }, [products]);
+
   if (loading) {
     return <p className="text-center col-span-full text-base sm:text-xl animate-pulse brightness-110">Loading products...</p>;
   }
@@ -41,7 +54,7 @@ export default function Home() {
   return (
     <main className="flex flex-col items-center">
       <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-      <section className="mt-2 mb-10 w-full max-w-5xl grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 p-3">
+      <section ref={productGridRef} className="mt-2 mb-10 w-full max-w-5xl grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 p-3">
         {products
           ?.filter((product: Product) =>
             product.name.toLowerCase().includes(searchQuery.toLowerCase()),
