@@ -14,6 +14,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
 
   const productGridRef = useRef<HTMLDivElement>(null);
+  const animationPlayed = useRef(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -34,12 +35,13 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (products.length > 0 && productGridRef.current) {
+    if (products.length > 0 && productGridRef.current && !animationPlayed.current) {
       gsap.fromTo(
         productGridRef.current.children,
         { opacity: 0, y: 50, scale: 0.8 },
         { opacity: 1, y: 0, scale: 1, duration: 0.7, stagger: 0.08, ease: "back.out(1.7)" },
       );
+      animationPlayed.current = true;
     }
   }, [products]);
 
