@@ -1,23 +1,55 @@
+'use client';
+
 import { supabase } from '../lib/supabase';
 import { Product } from '../types/product';
 import ProductCard from '../components/ProductCard';
+import SearchBar from '../components/SearchBar';
+import { useState, useEffect } from 'react';
 
-export const revalidate = 0; // Revalidate every 0 seconds to ensure fresh data
+export default function Home() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
-export default async function Home() {
-  const { data: products, error } = await supabase.from('products').select('*');
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const { data, error } = await supabase.from('products').select('*');
+      if (error) {
+        console.error('Error fetching products:', error);
+        setError('Error loading products.');
+      } else {
+        setProducts(data);
+      }
+      setLoading(false);
+    };
+    fetchProducts();
+  }, []);
+
+  if (loading) {
+    return <p>Loading products...</p>;
+  }
 
   if (error) {
-    console.error('Error fetching products:', error);
-    return <p>Error loading products.</p>;
+    return <p>{error}</p>;
   }
 
   return (
     <main className="flex flex-col items-center">
-      <section className="my-5 sm:my-10 w-full max-w-5xl grid grid-cols-2 sm:grid-cols-3 gap-4 p-3">
-        {products?.map((product: Product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      <section className="my-5 w-full max-w-5xl grid grid-cols-2 sm:grid-cols-3 gap-4 p-3">
+        {products
+          ?.filter((product: Product) =>
+            product.name.toLowerCase().includes(searchQuery.toLowerCase()),
+          )
+          .map((product: Product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        {products?.filter((product: Product) =>
+          product.name.toLowerCase().includes(searchQuery.toLowerCase()),
+        ).length === 0 && ( /* This will only show if there are no search results and there are products in Supabase */
+            <p className="text-center col-span-full text-base sm:text-xl">No products found</p>
+          )}
       </section>
     </main>
   );
