@@ -5,9 +5,13 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Product } from "@/types/product";
 import { ProductImage } from "@/types/product";
+import { useRouter } from "next/navigation";
+import { Session } from "@supabase/supabase-js";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 export default function AdminPage() {
     const supabase = createClient();
+    const router = useRouter(); // Initialize useRouter
     const [products, setProducts] = useState<Product[]>([]);
     const [newProductName, setNewProductName] = useState("");
     const [newProductPrice, setNewProductPrice] = useState("");
@@ -25,8 +29,47 @@ export default function AdminPage() {
     const [editedNewImages, setEditedNewImages] = useState<File[]>([]); // For new images during edit
     const [editedProductAvailable, setEditedProductAvailable] = useState<boolean>(true); // New state for availability
 
+    const [session, setSession] = useState<Session | null>(null); // State for session
+    const [userRole, setUserRole] = useState<string | null>(null); // State for user role
+    const [loadingAuth, setLoadingAuth] = useState(true); // State for authentication loading
+
     useEffect(() => {
-        fetchProducts();
+        const checkAuth = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            setSession(session);
+
+            if (session) {
+                const { data: profile, error } = await supabase
+                    .from("profiles")
+                    .select("role")
+                    .eq("id", session.user.id)
+                    .single();
+
+                if (error || profile?.role !== "admin") {
+                    router.push("/"); // Redirect to home if not admin or error fetching role
+                } else {
+                    setUserRole(profile.role);
+                    fetchProducts();
+                }
+            } else {
+                router.push("/"); // Redirect to home if no session
+            }
+            setLoadingAuth(false);
+        };
+        checkAuth();
+
+        const { data: authListener } = supabase.auth.onAuthStateChange((event, currentSession) => {
+            setSession(currentSession);
+            if (currentSession) {
+                checkAuth(); // Re-check auth on state change
+            } else {
+                router.push("/"); // Redirect if logged out
+            }
+        });
+
+        return () => {
+            authListener.subscription.unsubscribe();
+        };
     }, []);
 
     const fetchProducts = async () => {
@@ -221,6 +264,20 @@ export default function AdminPage() {
         setEditedNewImages([]);
         setEditedProductAvailable(true);
     };
+
+    if (loadingAuth) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <LoadingSpinner />
+            </div>
+        );
+    }
+
+    if (!session || userRole !== "admin") {
+        return (
+            <div className="min-h-screen flex items-center justify-center" />
+        );
+    }
 
     return (
         <div className="container mx-auto p-4 bg-neutral-950 min-h-screen text-white">
