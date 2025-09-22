@@ -14,7 +14,11 @@ export default function Home() {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const { data, error } = await supabase.from('products').select('*');
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('available', true)
+        .order('created_at', { ascending: false });
       if (error) {
         console.error('Error fetching products:', error);
         setError('Error loading products.');
