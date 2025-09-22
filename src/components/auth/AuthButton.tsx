@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Session } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
-import LoadingSpinner from "./ui/LoadingSpinner";
+import LoadingSpinner from "../ui/LoadingSpinner";
 import { Suspense } from "react";
 import UserAvatarDropdown from "./UserAvatarDropdown";
 import LoginButton from "./LoginButton";

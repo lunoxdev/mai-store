@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import CartSidebar from "@/components/CartSidebar";
-import AuthButton from "./AuthButton";
+import AuthButton from "./auth/AuthButton";
 
 export default function Header() {
     const [isCartOpen, setIsCartOpen] = useState(false);
