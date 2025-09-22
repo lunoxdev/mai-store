@@ -1,4 +1,4 @@
-
+// TODO: Segment the code
 "use client";
 
 import { useEffect, useState } from "react";
@@ -39,7 +39,6 @@ export default function AdminPage() {
     };
 
     const handleAddProduct = async () => {
-        // Image upload logic will go here
         const uploadedImages: ProductImage[] = [];
 
         for (const imageFile of newProductImages) {
@@ -159,11 +158,37 @@ export default function AdminPage() {
             uploadedImages.push({ url: publicUrlData.publicUrl, alt: editedProductName, path: data.path });
         }
 
+        const { data: currentProduct, error: fetchError } = await supabase.from("products").select("name, handle").eq("id", productId).single();
+
+        if (fetchError) {
+            console.error("Error fetching current product for handle check:", fetchError.message);
+            return;
+        }
+
+        let productHandle = currentProduct?.handle;
+        if (editedProductName !== currentProduct?.name) {
+            // Only generate new handle if name has changed
+            let baseHandle = editedProductName.toLowerCase().replace(/\s+/g, '-');
+            // Check if this new handle already exists for another product
+            const { data: existingProducts, error: existingHandleError } = await supabase.from("products").select("id").eq("handle", baseHandle);
+
+            if (existingHandleError) {
+                console.error("Error checking for existing handle:", existingHandleError.message);
+                return;
+            }
+
+            if (existingProducts && existingProducts.length > 0 && existingProducts[0].id !== productId) {
+                // If handle exists and belongs to a different product, append part of the ID for uniqueness
+                baseHandle = `${baseHandle}-${productId.substring(0, 8)}`; // Use first 8 chars of UUID
+            }
+            productHandle = baseHandle;
+        }
+
         const { error } = await supabase
             .from("products")
             .update({
                 name: editedProductName,
-                handle: editedProductName.toLowerCase().replace(/\s+/g, '-'), // Automatically generate handle
+                handle: productHandle,
                 price: parseFloat(editedProductPrice || '0'),
                 description: editedProductDescription,
                 units: parseInt(editedProductUnits || '0'),
@@ -198,31 +223,31 @@ export default function AdminPage() {
     };
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
+        <div className="container mx-auto p-4 bg-neutral-950 min-h-screen text-white">
+            <h1 className="text-4xl font-extrabold mb-8 text-center text-blue-400">Admin Dashboard</h1>
 
-            <div className="mb-8">
-                <h2 className="text-xl font-semibold mb-2">Add New Product</h2>
-                <div className="flex flex-col space-y-2">
+            <div className="mb-12 p-6 bg-neutral-900 rounded-xl shadow-2xl border border-neutral-700">
+                <h2 className="text-3xl font-bold mb-6 text-white text-center">Add New Product</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <input
                         type="text"
                         placeholder="Product Name"
                         value={newProductName}
                         onChange={(e) => setNewProductName(e.target.value)}
-                        className="border p-2 rounded text-gray-400"
+                        className="p-3 rounded-lg bg-neutral-800 border border-neutral-700 text-white placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-200"
                     />
                     <input
                         type="number"
                         placeholder="Price"
                         value={newProductPrice}
                         onChange={(e) => setNewProductPrice(e.target.value)}
-                        className="border p-2 rounded text-gray-400"
+                        className="p-3 rounded-lg bg-neutral-800 border border-neutral-700 text-white placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-200"
                     />
                     <textarea
                         placeholder="Description"
                         value={newProductDescription}
                         onChange={(e) => setNewProductDescription(e.target.value)}
-                        className="border p-2 rounded text-gray-400"
+                        className="p-3 rounded-lg bg-neutral-800 border border-neutral-700 text-white placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-200 md:col-span-2"
                         rows={3}
                     ></textarea>
                     <input
@@ -230,10 +255,10 @@ export default function AdminPage() {
                         placeholder="Units"
                         value={newProductUnits}
                         onChange={(e) => setNewProductUnits(e.target.value)}
-                        className="border p-2 rounded text-gray-400"
+                        className="p-3 rounded-lg bg-neutral-800 border border-neutral-700 text-white placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-200"
                     />
-                    <div className="flex items-center space-x-2">
-                        <label className="block text-white text-sm font-bold mb-2" htmlFor="new-product-images">
+                    <div className="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-4 md:col-span-2">
+                        <label className="block text-white text-base font-medium min-w-[120px]" htmlFor="new-product-images">
                             Upload Images:
                         </label>
                         <input
@@ -241,173 +266,163 @@ export default function AdminPage() {
                             id="new-product-images"
                             multiple
                             onChange={handleAddNewImageFile}
-                            className="border p-2 rounded text-white"
+                            className="block w-full text-sm text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer"
                             accept="image/*"
                         />
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-3 mt-2 md:col-span-2">
                         {newProductImages.map((imageFile, index) => (
-                            <div key={index} className="flex items-center bg-neutral-700 rounded p-1">
-                                <span className="text-sm truncate w-32">{imageFile.name}</span>
+                            <div key={index} className="flex items-center bg-neutral-700 rounded-full pl-3 pr-2 py-1 space-x-2 shadow-md">
+                                <span className="text-sm text-white truncate max-w-[100px]">{imageFile.name}</span>
                                 <button
                                     onClick={() => handleRemoveImageFromNewProduct(index)}
-                                    className="ml-2 text-red-400 hover:text-red-600"
+                                    className="text-red-400 hover:text-red-300 text-xl leading-none font-bold"
                                 >
                                     &times;
                                 </button>
                             </div>
                         ))}
                     </div>
-                    <label className="flex items-center space-x-2 text-white">
+                    <label className="flex items-center space-x-2 text-white md:col-span-2 cursor-pointer">
                         <input
                             type="checkbox"
                             checked={newProductAvailable}
                             onChange={(e) => setNewProductAvailable(e.target.checked)}
-                            className="form-checkbox h-5 w-5 text-blue-600"
+                            className="form-checkbox h-5 w-5 text-blue-500 rounded focus:ring-blue-500 bg-neutral-700 border-neutral-600"
                         />
-                        <span>Available</span>
+                        <span className="text-white text-base">Available</span>
                     </label>
                     <button
                         onClick={handleAddProduct}
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        className="col-span-1 md:col-span-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 shadow-lg"
                     >
                         Add Product
                     </button>
                 </div>
             </div>
 
-            <div>
-                <h2 className="text-xl font-semibold mb-2">Existing Products</h2>
-                <ul>
-                    {products.map((product) => (
-                        <li key={product.id} className="flex justify-between items-center bg-neutral-800 p-2 rounded mb-2">
-                            {editingProductId === product.id ? (
-                                <div className="flex flex-col space-y-2 w-full">
-                                    <input
-                                        type="text"
-                                        value={editedProductName}
-                                        onChange={(e) => setEditedProductName(e.target.value)}
-                                        className="border p-2 rounded text-black flex-grow"
-                                    />
-                                    <input
-                                        type="number"
-                                        value={editedProductPrice}
-                                        onChange={(e) => setEditedProductPrice(e.target.value)}
-                                        className="border p-2 rounded text-black"
-                                    />
-                                    <textarea
-                                        value={editedProductDescription}
-                                        onChange={(e) => setEditedProductDescription(e.target.value)}
-                                        className="border p-2 rounded text-black"
-                                        rows={3}
-                                    ></textarea>
-                                    <input
-                                        type="number"
-                                        value={editedProductUnits}
-                                        onChange={(e) => setEditedProductUnits(e.target.value)}
-                                        className="border p-2 rounded text-black"
-                                    />
-                                    <div className="flex items-center space-x-2">
-                                        <label className="block text-white text-sm font-bold mb-2" htmlFor="edited-product-new-images">
-                                            Upload New Images:
-                                        </label>
-                                        <input
-                                            type="file"
-                                            id="edited-product-new-images"
-                                            multiple
-                                            onChange={handleAddNewImageFileToEditedProduct}
-                                            className="border p-2 rounded text-white"
-                                            accept="image/*"
-                                        />
-                                    </div>
-                                    <div className="flex flex-wrap gap-2">
-                                        {editedProductImages.map((image, index) => (
-                                            <div key={image.url} className="flex items-center bg-neutral-700 rounded p-1">
-                                                <span className="text-sm truncate w-32">{image.url.split('/').pop()}</span>
-                                                <button
-                                                    onClick={() => handleRemoveImageFromEditedProduct(index, false)}
-                                                    className="ml-2 text-red-400 hover:text-red-600"
-                                                >
-                                                    &times;
-                                                </button>
-                                            </div>
-                                        ))}
-                                        {editedNewImages.map((imageFile, index) => (
-                                            <div key={index} className="flex items-center bg-neutral-700 rounded p-1">
-                                                <span className="text-sm truncate w-32">{imageFile.name}</span>
-                                                <button
-                                                    onClick={() => handleRemoveImageFromEditedProduct(index, true)}
-                                                    className="ml-2 text-red-400 hover:text-red-600"
-                                                >
-                                                    &times;
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <label className="flex items-center space-x-2 text-white">
-                                        <input
-                                            type="checkbox"
-                                            checked={editedProductAvailable}
-                                            onChange={(e) => setEditedProductAvailable(e.target.checked)}
-                                            className="form-checkbox h-5 w-5 text-blue-600"
-                                        />
-                                        <span>Available</span>
-                                    </label>
-                                    <div className="flex space-x-2">
-                                        <button
-                                            onClick={() => handleSaveProduct(product.id)}
-                                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded"
-                                        >
-                                            Save
-                                        </button>
-                                        <button
-                                            onClick={handleCancelEdit}
-                                            className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-2 rounded"
-                                        >
-                                            Cancel
-                                        </button>
-                                    </div>
-                                </div>
-                            ) : (
-                                <>
-                                    <div className="flex flex-col">
-                                        <span><strong>Name:</strong> {product.name}</span>
-                                        <span><strong>Price:</strong> ${product.price}</span>
-                                        <span><strong>Description:</strong> {product.description}</span>
-                                        <span><strong>Units:</strong> {product.units}</span>
-                                        <span><strong>Available:</strong> {product.available ? "Yes" : "No"}</span>
+            <div className="mt-12 p-6 bg-neutral-900 rounded-xl shadow-2xl border border-neutral-700">
+                <h2 className="text-3xl font-bold mb-6 text-white text-center">Existing Products</h2>
+                <div className="overflow-x-auto">
+                    <table className="min-w-full bg-neutral-800 rounded-lg shadow-md overflow-hidden">
+                        <thead>
+                            <tr className="bg-neutral-700 text-white uppercase text-sm leading-normal">
+                                <th className="py-3 px-6 text-left">Image</th>
+                                <th className="py-3 px-6 text-left">Product Name</th>
+                                <th className="py-3 px-6 text-left">Price</th>
+                                <th className="py-3 px-6 text-left">Description</th>
+                                <th className="py-3 px-6 text-left">Units</th>
+                                <th className="py-3 px-6 text-left">Available</th>
+                                <th className="py-3 px-6 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="text-white text-sm font-light">
+                            {products.map((product) => (
+                                <tr key={product.id} className="border-b border-neutral-700 hover:bg-neutral-700">
+                                    <td className="py-3 px-6 text-left whitespace-nowrap">
                                         {product.images && product.images.length > 0 && (
-                                            <div>
-                                                <strong>Images:</strong>
-                                                <div className="flex flex-wrap gap-2 mt-1">
-                                                    {product.images.map((image, index) => (
-                                                        <a key={index} href={image.url} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline text-sm truncate w-24">
-                                                            {image.url.split('/').pop()}
-                                                        </a>
-                                                    ))}
-                                                </div>
+                                            <img src={product.images[0].url} alt={product.images[0].alt || ""} className="w-16 h-16 object-cover rounded-md" />
+                                        )}
+                                    </td>
+                                    <td className="py-3 px-6 text-left">
+                                        {editingProductId === product.id ? (
+                                            <input
+                                                type="text"
+                                                value={editedProductName}
+                                                onChange={(e) => setEditedProductName(e.target.value)}
+                                                className="p-2 rounded-lg bg-neutral-700 border border-neutral-600 text-white w-full"
+                                            />
+                                        ) : (
+                                            <p className="font-semibold">{product.name}</p>
+                                        )}
+                                    </td>
+                                    <td className="py-3 px-6 text-left">
+                                        {editingProductId === product.id ? (
+                                            <input
+                                                type="number"
+                                                value={editedProductPrice}
+                                                onChange={(e) => setEditedProductPrice(e.target.value)}
+                                                className="p-2 rounded-lg bg-neutral-700 border border-neutral-600 text-white w-full"
+                                            />
+                                        ) : (
+                                            <p>${product.price}</p>
+                                        )}
+                                    </td>
+                                    <td className="py-3 px-6 text-left">
+                                        {editingProductId === product.id ? (
+                                            <textarea
+                                                value={editedProductDescription}
+                                                onChange={(e) => setEditedProductDescription(e.target.value)}
+                                                className="p-2 rounded-lg bg-neutral-700 border border-neutral-600 text-white w-full" rows={1}
+                                            ></textarea>
+                                        ) : (
+                                            <p className="truncate w-48">{product.description}</p>
+                                        )}
+                                    </td>
+                                    <td className="py-3 px-6 text-left">
+                                        {editingProductId === product.id ? (
+                                            <input
+                                                type="number"
+                                                value={editedProductUnits}
+                                                onChange={(e) => setEditedProductUnits(e.target.value)}
+                                                className="p-2 rounded-lg bg-neutral-700 border border-neutral-600 text-white w-full"
+                                            />
+                                        ) : (
+                                            <p>{product.units}</p>
+                                        )}
+                                    </td>
+                                    <td className="py-3 px-6 text-left">
+                                        {editingProductId === product.id ? (
+                                            <input
+                                                type="checkbox"
+                                                checked={editedProductAvailable}
+                                                onChange={(e) => setEditedProductAvailable(e.target.checked)}
+                                                className="form-checkbox h-5 w-5 text-blue-500 rounded focus:ring-blue-500 bg-neutral-700 border-neutral-600"
+                                            />
+                                        ) : (
+                                            <span className={product.available ? "text-green-500" : "text-red-500"}>
+                                                {product.available ? "Yes" : "No"}
+                                            </span>
+                                        )}
+                                    </td>
+                                    <td className="py-3 px-6 text-center">
+                                        {editingProductId === product.id ? (
+                                            <div className="flex items-center justify-center space-x-3">
+                                                <button
+                                                    onClick={() => handleSaveProduct(product.id)}
+                                                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded-lg text-xs transition duration-300"
+                                                >
+                                                    Save
+                                                </button>
+                                                <button
+                                                    onClick={handleCancelEdit}
+                                                    className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-1 px-3 rounded-lg text-xs transition duration-300"
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <div className="flex items-center justify-center space-x-3">
+                                                <button
+                                                    onClick={() => handleEditProduct(product)}
+                                                    className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-1 px-3 rounded-lg text-xs transition duration-300 cursor-pointer"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteProduct(product.id)}
+                                                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-lg text-xs transition duration-300 cursor-pointer"
+                                                >
+                                                    Delete
+                                                </button>
                                             </div>
                                         )}
-                                    </div>
-                                    <div>
-                                        <button
-                                            onClick={() => handleEditProduct(product)}
-                                            className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded"
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            onClick={() => handleDeleteProduct(product.id)}
-                                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded ml-2"
-                                        >
-                                            Delete
-                                        </button>
-                                    </div>
-                                </>
-                            )}
-                        </li>
-                    ))}
-                </ul>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );
