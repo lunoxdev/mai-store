@@ -13,17 +13,24 @@ export default function AuthButton() {
     const supabase = createClient();
     const router = useRouter();
     const [session, setSession] = useState<Session | null>(null);
+    const [userRole, setUserRole] = useState<string | null>(null);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);
+            if (session?.user) {
+                fetchUserRole(session.user.id);
+            }
         });
 
         const { data: authListener } = supabase.auth.onAuthStateChange(
             (event, session) => {
                 setSession(session);
+                if (session?.user) {
+                    fetchUserRole(session.user.id);
+                }
             }
         );
 
@@ -31,6 +38,19 @@ export default function AuthButton() {
             authListener.subscription.unsubscribe();
         };
     }, []);
+
+    const fetchUserRole = async (userId: string) => {
+        const { data, error } = await supabase
+            .from("profiles")
+            .select("role")
+            .eq("id", userId)
+            .single();
+        if (error) {
+            setUserRole(null);
+        } else if (data) {
+            setUserRole(data.role);
+        }
+    };
 
     const handleLogin = async () => {
         const { error } = await supabase.auth.signInWithOAuth({
@@ -78,6 +98,7 @@ export default function AuthButton() {
                     isDropdownOpen={isDropdownOpen}
                     toggleDropdown={toggleDropdown}
                     dropdownRef={dropdownRef}
+                    userRole={userRole}
                 />
             ) : (
                 <LoginButton handleLogin={handleLogin} />

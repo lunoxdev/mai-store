@@ -1,6 +1,7 @@
 interface ProductImage {
   alt: string | null;
   url: string;
+  path?: string;
 }
 
 interface Product {

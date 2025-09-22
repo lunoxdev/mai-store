@@ -10,6 +10,7 @@ interface UserAvatarDropdownProps {
     isDropdownOpen: boolean;
     toggleDropdown: () => void;
     dropdownRef: RefObject<HTMLDivElement | null>;
+    userRole: string | null;
 }
 
 export default function UserAvatarDropdown({
@@ -18,6 +19,7 @@ export default function UserAvatarDropdown({
     isDropdownOpen,
     toggleDropdown,
     dropdownRef,
+    userRole,
 }: UserAvatarDropdownProps) {
     return (
         <div className="relative" ref={dropdownRef}>
@@ -41,6 +43,14 @@ export default function UserAvatarDropdown({
             </button>
             {isDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-neutral-800 rounded-md shadow-lg py-1 z-20">
+                    {userRole === 'admin' && (
+                        <a
+                            href="/admin"
+                            className="block w-full text-left px-4 py-2 text-sm text-neutral-200 hover:bg-neutral-700"
+                        >
+                            Admin Dashboard
+                        </a>
+                    )}
                     <button
                         onClick={handleLogout}
                         className="block w-full text-left px-4 py-2 text-sm text-neutral-200 hover:bg-neutral-700"
