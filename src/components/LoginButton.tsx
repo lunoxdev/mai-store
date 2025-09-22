@@ -19,7 +19,7 @@ export default function LoginButton({ handleLogin }: LoginButtonProps) {
                 alt="Google G Logo"
                 width={40}
                 height={40}
-                className="p-1 flex h-8 sm:h-10 w-8 sm:w-10 items-center justify-center rounded-full border border-neutral-600 text-black transition-colors shrink-0 object-cover"
+                className="flex h-8 sm:h-11 w-8 sm:w-11 items-center justify-center rounded-full border border-neutral-600 text-black transition-colors shrink-0 object-cover"
             />
         </button>
     );
