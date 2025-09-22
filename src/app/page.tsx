@@ -2,6 +2,8 @@ import { supabase } from '../lib/supabase';
 import { Product } from '../types/product';
 import ProductCard from '../components/ProductCard';
 
+export const revalidate = 0; // Revalidate every 0 seconds to ensure fresh data
+
 export default async function Home() {
   const { data: products, error } = await supabase.from('products').select('*');
 
