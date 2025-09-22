@@ -42,18 +42,18 @@ export default function UserAvatarDropdown({
                 )}
             </button>
             {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-neutral-800 rounded-md shadow-lg py-1 z-20">
+                <div className="absolute right-14 sm:right-20 -top-2 mt-2 w-40 sm:w-48 bg-[#171717] rounded-md shadow-lg py-1 z-20">
                     {userRole === 'admin' && (
                         <a
                             href="/admin"
-                            className="block w-full text-left px-4 py-2 text-sm text-neutral-200 hover:bg-neutral-700"
+                            className="block w-full text-left px-4 py-2 text-sm text-neutral-200 hover:bg-black hover:brightness-150 ursor-pointer transition duration-300 ease-in-out"
                         >
                             Admin Dashboard
                         </a>
                     )}
                     <button
                         onClick={handleLogout}
-                        className="block w-full text-left px-4 py-2 text-sm text-neutral-200 hover:bg-neutral-700"
+                        className="block w-full text-left px-4 py-2 text-sm text-neutral-200 hover:bg-black hover:brightness-150 cursor-pointer border-t border-gray-700 transition duration-300 ease-in-out"
                     >
                         Logout
                     </button>

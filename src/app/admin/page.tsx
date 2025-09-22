@@ -301,10 +301,10 @@ export default function AdminPage() {
                 </div>
             </div>
 
-            <div className="mt-12 p-6 bg-neutral-900 rounded-xl shadow-2xl border border-neutral-700">
+            <div className="mt-12 p-5 bg-neutral-900 rounded-xl shadow-2xl border border-neutral-700">
                 <h2 className="text-3xl font-bold mb-6 text-white text-center">Existing Products</h2>
-                <div className="overflow-x-auto">
-                    <table className="min-w-full bg-neutral-800 rounded-lg shadow-md overflow-hidden">
+                <div className="overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                    <table className="min-w-full bg-neutral-800 rounded-lg shadow-md">
                         <thead>
                             <tr className="bg-neutral-700 text-white uppercase text-sm leading-normal">
                                 <th className="py-3 px-6 text-left">Image</th>
