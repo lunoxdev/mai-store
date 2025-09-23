@@ -23,14 +23,15 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
             <div className="grid lg:grid-cols-2 gap-6">
                 {product.images.length > 0 && (
                     <div
-                        className="relative h-[400px] sm:h-[600px] w-full overflow-hidden rounded-lg cursor-pointer"
+                        className="relative h-[450px] sm:h-[600px] w-full overflow-hidden rounded-lg cursor-pointer border border-gray-800 p-[1px] backdrop-blur-3xl"
                         onClick={toggleImageEnlargement}
                     >
+                        <span className='absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,theme(colors.pink.500)_0%,theme(colors.indigo.600)_50%,theme(colors.pink.500)_100%)]' />
                         <Image
                             src={product.images[0].url}
                             alt={product.images[0].alt || product.name}
                             fill
-                            className="object-cover w-full h-full"
+                            className="object-cover w-full h-full inline-flex items-center justify-center rounded-xl px-2 py-2 text-sm font-medium text-gray-50 backdrop-blur-3xl"
                         />
                     </div>
                 )}
