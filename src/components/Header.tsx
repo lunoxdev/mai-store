@@ -14,9 +14,11 @@ export default function Header() {
     const closeCart = () => setIsCartOpen(false);
 
     return (
-        <header className="flex justify-between items-center p-4">
+        <header className="flex justify-between items-center p-4 mt-1 sm:mt-5">
             <Link href="/">
-                <h1 className="text-2xl font-bold">Mai Store</h1>
+                <h1 className="text-lg sm:text-3xl font-bold bg-gradient-to-r from-gray-400 via-gray-100 to-gray-400 text-transparent bg-clip-text uppercase">
+                    Mai Store
+                </h1>
             </Link>
             <div className="flex justify-end md:w-1/3">
                 <AuthButton />
