@@ -17,7 +17,7 @@ export default function Header() {
         <header className="flex justify-between items-center p-4 mt-1 sm:mt-5">
             <Link href="/">
                 <h1 className="text-lg sm:text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 text-transparent bg-clip-text uppercase">
-                    Mai Store
+                    M&M Store
                 </h1>
             </Link>
             <div className="flex justify-end md:w-1/3">

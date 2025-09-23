@@ -1,4 +1,4 @@
-# Mai Store
+# M&M Store
 
 This is an e-commerce project built with [Next.js](https://nextjs.org) and [Supabase](https://supabase.io/). It features product management, a shopping cart, user authentication, and order confirmation via WhatsApp.
 
