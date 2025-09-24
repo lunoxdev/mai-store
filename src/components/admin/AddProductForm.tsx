@@ -101,7 +101,7 @@ export default function AddProductForm({
         >
             <div
                 onClick={(e) => e.stopPropagation()}
-                className="w-full sm:w-1/5 px-6 py-12 bg-white/60 backdrop-blur-lg rounded-xl shadow-2xl">
+                className="w-full sm:w-1/3 2xl:w-1/4 px-6 py-12 bg-white/60 backdrop-blur-lg rounded-xl shadow-2xl">
                 <button
                     className="absolute top-3 right-3 text-gray-600 hover:text-gray-800 text-2xl cursor-pointer hover:scale-110"
                     onClick={onClose}
