@@ -58,9 +58,9 @@ export default function Home() {
           .map((product: Product) => (
             <ProductCard key={product.id} product={product} />
           ))}
-        {products?.filter((product: Product) =>
+        {!loading && products?.filter((product: Product) =>
           product.name.toLowerCase().includes(searchQuery.toLowerCase()),
-        ).length === 0 && ( /* This will only show if there are no search results and there are products in Supabase */
+        ).length === 0 && (
             <p className="text-center col-span-full text-base sm:text-xl animate-pulse brightness-110">No products found</p>
           )}
       </section>
