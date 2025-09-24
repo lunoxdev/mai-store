@@ -162,7 +162,7 @@ export default function ProductListTable({ products, onEdit, onDelete, onProduct
                 <table className="min-w-full bg-white/50 rounded-xl shadow-md">
                     <thead className="rounded-t-2xl">
                         <tr className="bg-black text-white uppercase text-sm leading-normal rounded-t-2xl shrink-0">
-                            <th className="rounded-tl-lg py-3 px-3 text-xs sm:text-sm text-left tracking-wider">Image</th>
+                            <th className="rounded-tl-lg py-3 px-3 text-xs sm:text-sm text-left tracking-wider w-24 sm:w-32">Image</th>
                             <th className="py-3 px-3 text-xs sm:text-sm text-left tracking-wider">Product Name</th>
                             <th className="py-3 px-3 text-xs sm:text-sm text-left tracking-wider">Price</th>
                             <th className="py-3 px-3 text-xs sm:text-sm text-left tracking-wider">Description</th>
@@ -174,9 +174,9 @@ export default function ProductListTable({ products, onEdit, onDelete, onProduct
                     <tbody className="text-sm font-light h-full">
                         {products.map((product) => (
                             <tr key={product.id} className="border-b border-white/30 hover:bg-black/5">
-                                <td className="py-3 px-6 text-left whitespace-nowrap">
+                                <td className="py-3 px-3 text-center flex items-center justify-center w-full">
                                     {product.images && product.images.length > 0 && (
-                                        <img src={product.images[0].url} alt={product.images[0].alt || ""} className="w-16 h-16 object-cover rounded-md" />
+                                        <img src={product.images[0].url} alt={product.images[0].alt || ""} className="w-14 h-14 sm:w-24 sm:h-24 object-cover rounded-md" />
                                     )}
                                 </td>
                                 <td className="py-3 px-6 text-left">

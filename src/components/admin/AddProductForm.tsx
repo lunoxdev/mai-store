@@ -8,6 +8,10 @@ interface AddProductFormProps {
     isOpen: boolean;
 }
 
+interface ImageFileWithPreview extends File {
+    previewUrl: string;
+}
+
 export default function AddProductForm({
     isOpen,
     onClose,
@@ -20,7 +24,7 @@ export default function AddProductForm({
     const [newProductPrice, setNewProductPrice] = useState("");
     const [newProductDescription, setNewProductDescription] = useState("");
     const [newProductUnits, setNewProductUnits] = useState("");
-    const [newProductImages, setNewProductImages] = useState<File[]>([]);
+    const [newProductImages, setNewProductImages] = useState<ImageFileWithPreview[]>([]);
     const [newProductAvailable, setNewProductAvailable] = useState<boolean>(true);
 
     const handleAddProduct = async () => {
@@ -62,6 +66,7 @@ export default function AddProductForm({
             setNewProductPrice("");
             setNewProductDescription("");
             setNewProductUnits("");
+            newProductImages.forEach((image) => URL.revokeObjectURL(image.previewUrl)); // Clean up preview URLs
             setNewProductImages([]);
             setNewProductAvailable(true);
             onClose(); // Close modal after adding product
@@ -69,13 +74,24 @@ export default function AddProductForm({
     };
 
     const handleAddNewImageFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files) {
-            setNewProductImages([...newProductImages, ...Array.from(e.target.files)]);
+        if (e.target.files && e.target.files.length > 0) {
+            // Clear previous preview URLs if any
+            newProductImages.forEach((image) => URL.revokeObjectURL(image.previewUrl));
+            const file = e.target.files[0];
+            const fileWithPreview = Object.assign(file, { previewUrl: URL.createObjectURL(file) });
+            setNewProductImages([fileWithPreview]);
         }
     };
 
     const handleRemoveImageFromNewProduct = (index: number) => {
+        const imageToRemove = newProductImages[index];
+        URL.revokeObjectURL(imageToRemove.previewUrl); // Clean up the specific preview URL
         setNewProductImages(newProductImages.filter((_, i) => i !== index));
+        // Clear the file input value to allow re-uploading the same file
+        const fileInput = document.getElementById("new-product-images") as HTMLInputElement;
+        if (fileInput) {
+            fileInput.value = "";
+        }
     };
 
     return (
@@ -136,7 +152,6 @@ export default function AddProductForm({
                         <input
                             type="file"
                             id="new-product-images"
-                            multiple
                             onChange={handleAddNewImageFile}
                             className="block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-black file:text-white hover:file:brightness-150 cursor-pointer"
                             accept="image/*"
@@ -145,6 +160,7 @@ export default function AddProductForm({
                     <div className="flex flex-wrap gap-3 mt-2 md:col-span-2">
                         {newProductImages.map((imageFile, index) => (
                             <div key={index} className="flex items-center bg-white/70 rounded-full pl-3 pr-2 py-1 space-x-2 shadow-md">
+                                <img src={imageFile.previewUrl} alt={imageFile.name} className="h-8 w-8 object-cover rounded-lg" />
                                 <span className="text-sm text-neutral-700 truncate max-w-[100px]">{imageFile.name}</span>
                                 <button
                                     onClick={() => handleRemoveImageFromNewProduct(index)}
