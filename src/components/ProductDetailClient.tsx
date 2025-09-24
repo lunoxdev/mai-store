@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { type Product } from "@/types/product";
 import ProductCard from "@/components/ProductCard";
 import AddToCartButton from "@/components/AddToCartButton";
+import { gsap } from 'gsap';
 
 interface ProductDetailClientProps {
     product: Product;
@@ -12,7 +13,30 @@ interface ProductDetailClientProps {
 }
 
 export default function ProductDetailClient({ product, relatedProducts }: ProductDetailClientProps) {
-    const [isImageEnlarged, setIsImageEnlarged] = useState(false);
+    const [isImageEnlarged, setIsImageEnlarged] = useState<boolean>(false);
+    const imageRef = useRef(null);
+    const detailsRef = useRef(null);
+    const addToCartRef = useRef(null);
+    const relatedProductsRefs = useRef<Array<HTMLAnchorElement | null>>([]);
+
+    useEffect(() => {
+        gsap.fromTo(imageRef.current,
+            { opacity: 0, x: -50 },
+            { opacity: 1, x: 0, duration: 0.8, ease: "power3.out" }
+        );
+        gsap.fromTo(detailsRef.current,
+            { opacity: 0, y: 50 },
+            { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", delay: 0.2 }
+        );
+        gsap.fromTo(addToCartRef.current,
+            { opacity: 0, scale: 0.8 },
+            { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)", delay: 0.4 }
+        );
+        gsap.fromTo(relatedProductsRefs.current,
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.6, ease: "power3.out", delay: 0.8, stagger: 0.2 }
+        );
+    }, [relatedProducts]);
 
     const toggleImageEnlargement = () => {
         setIsImageEnlarged(!isImageEnlarged);
@@ -25,6 +49,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                     <div
                         className="relative h-[450px] sm:h-[600px] w-full overflow-hidden rounded-lg cursor-pointer p-[1px] backdrop-blur-3xl"
                         onClick={toggleImageEnlargement}
+                        ref={imageRef}
                     >
                         <span className='absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,theme(colors.black)_0%,theme(colors.white)_50%,theme(colors.black)_100%)]' />
                         <Image
@@ -35,7 +60,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                         />
                     </div>
                 )}
-                <div className="flex flex-col w-full">
+                <div className="flex flex-col w-full" ref={detailsRef}>
                     <h1 className="text-3xl sm:text-4xl font-bold">{product.name}</h1>
                     <p className="mt-2 text-2xl font-semibold">
                         ₡{parseFloat(product.price)}
@@ -48,7 +73,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                     ) : (
                         <p className="mt-2 text-red-500 sm:text-xl">Out of stock</p>
                     )}
-                    <div className="mt-6 flex items-center">
+                    <div className="mt-6 flex items-center" ref={addToCartRef}>
                         <AddToCartButton product={product} />
                     </div>
                 </div>
@@ -57,8 +82,12 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                 <section className="mt-12 mx-auto">
                     <h2 className="text-2xl font-bold">Related Products</h2>
                     <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3">
-                        {relatedProducts.map((relatedProduct: Product) => (
-                            <ProductCard key={relatedProduct.id} product={relatedProduct} />
+                        {relatedProducts.map((relatedProduct: Product, index) => (
+                            <ProductCard
+                                key={relatedProduct.id}
+                                product={relatedProduct}
+                                ref={(el: HTMLAnchorElement | null): void => { relatedProductsRefs.current[index] = el; }}
+                            />
                         ))}
                     </div>
                 </section>

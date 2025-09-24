@@ -1,16 +1,18 @@
 import type { Product } from '../types/product';
 import Image from 'next/image';
 import Link from 'next/link';
+import React from 'react';
 
 interface ProductCardProps {
     product: Product;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(({ product }, ref) => {
     return (
         <Link
             href={`/product/${product.handle}`}
             className="group rounded-lg border border-transparent relative h-68 sm:h-96 cursor-pointer overflow-hidden"
+            ref={ref}
         >
             {product.images.length > 0 && (
                 <Image
@@ -30,4 +32,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             </div>
         </Link>
     );
-}
+});
+
+ProductCard.displayName = 'ProductCard';
+export default ProductCard;
