@@ -48,7 +48,7 @@ export default function UserAvatarDropdown({
                             href="/admin"
                             className="block w-full text-left px-4 py-2 text-sm text-neutral-200 hover:bg-black hover:brightness-150 ursor-pointer transition duration-300 ease-in-out"
                         >
-                            Admin Dashboard
+                            Admin Panel
                         </a>
                     )}
                     <button
