@@ -20,11 +20,11 @@ export default function ProductCard({ product }: ProductCardProps) {
                     className="rounded-lg absolute inset-0 transition-transform duration-300 group-hover:scale-110 object-cover"
                 />
             )}
-            <div className="absolute bottom-0 left-0 right-0 flex flex-col z-10 bg-gradient-to-tr from-black to-90% to-transparent p-2 space-y-0.5">
-                <p className="text-sm sm:text-base">
+            <div className="absolute bottom-0 left-0 right-0 flex flex-col z-10 bg-gradient-to-tr from-[#F5F5DC] to-transparent backdrop-blur-xs p-2">
+                <p className="text-sm sm:text-lg tracking-tight uppercase ">
                     ₡{parseFloat(product.price)}
                 </p>
-                <h2 className="text-sm sm:text-lg font-bold tracking-tight truncate">
+                <h2 className="text-sm sm:text-lg font-bold tracking-tight truncate uppercase ">
                     {product.name}
                 </h2>
             </div>

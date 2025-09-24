@@ -34,7 +34,7 @@ export default function Header() {
                         className="h-12 sm:h-16 w-12 sm:w-16 rounded-full shrink-0 object-cover hover:scale-110 transition duration-300 ease-in-out"
                     />
                     {cartCount > 0 && (
-                        <span className="absolute top-1 right-0.5 text-white bg-gradient-to-br from-pink-500 to-purple-500 text-xs sm:text-sm font-extrabold rounded-full w-4 flex items-center justify-center">
+                        <span className="absolute top-1 right-1 text-white bg-gradient-to-br from-pink-500 to-purple-500 text-xs sm:text-sm font-extrabold rounded-full w-4 flex items-center justify-center">
                             {cartCount}
                         </span>
                     )}
