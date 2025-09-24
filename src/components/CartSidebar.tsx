@@ -67,7 +67,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
             {isOpen && <div className={overlayClasses} onClick={onClose} />}
 
             <div className={sidebarClasses}>
-                <section className="flex h-full flex-col overflow-y-auto bg-[#171717]">
+                <section className="flex h-full flex-col overflow-y-auto bg-[#171717] text-white">
                     <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                         <div className="flex items-start justify-between">
                             <h2 className="text-lg font-medium">My Cart</h2>
