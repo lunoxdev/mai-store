@@ -29,16 +29,18 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col mx-auto min-h-screen w-full sm:w-5xl`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col mx-auto min-h-screen w-screen items-center`}
       >
         <Background />
-        <CartProvider>
-          <Header />
-          <main>
-            {children}
-          </main>
-        </CartProvider>
-        <Analytics />
+        <div className="w-full sm:w-5xl">
+          <CartProvider>
+            <Header />
+            <main>
+              {children}
+            </main>
+          </CartProvider>
+          <Analytics />
+        </div>
       </body>
     </html>
   );

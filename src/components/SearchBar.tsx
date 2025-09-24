@@ -10,7 +10,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
     setSearchQuery,
 }) => {
     return (
-        <div className="w-full max-w-5xl flex justify-end px-3 mt-2">
+        <div className="w-full flex justify-end px-3 mt-2">
             <input
                 type="text"
                 placeholder="Search products..."

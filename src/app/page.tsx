@@ -56,7 +56,7 @@ export default function Home() {
   return (
     <main className="flex flex-col items-center">
       <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-      <section ref={productGridRef} className="mt-2 mb-10 w-full max-w-5xl grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 p-3">
+      <section ref={productGridRef} className="mt-2 mb-10 w-full grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 p-3">
         {products
           ?.filter((product: Product) =>
             product.name.toLowerCase().includes(searchQuery.toLowerCase()),
