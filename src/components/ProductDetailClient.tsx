@@ -23,10 +23,10 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
             <div className="grid lg:grid-cols-2 gap-6">
                 {product.images.length > 0 && (
                     <div
-                        className="relative h-[450px] sm:h-[600px] w-full overflow-hidden rounded-lg cursor-pointer border border-gray-800 p-[1px] backdrop-blur-3xl"
+                        className="relative h-[450px] sm:h-[600px] w-full overflow-hidden rounded-lg cursor-pointer p-[1px] backdrop-blur-3xl"
                         onClick={toggleImageEnlargement}
                     >
-                        <span className='absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,theme(colors.pink.500)_0%,theme(colors.indigo.600)_50%,theme(colors.pink.500)_100%)]' />
+                        <span className='absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,theme(colors.black)_0%,theme(colors.white)_50%,theme(colors.black)_100%)]' />
                         <Image
                             src={product.images[0].url}
                             alt={product.images[0].alt || product.name}
@@ -42,7 +42,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                     </p>
                     <p className="mt-4 sm:text-xl">{product.description}</p>
                     {product.units > 0 ? (
-                        <p className="mt-2 sm:text-xl text-green-500">
+                        <p className="mt-2 sm:text-xl text-green-500 font-semibold">
                             Units in stock: {product.units}
                         </p>
                     ) : (

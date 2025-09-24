@@ -4,7 +4,7 @@ import { ShaderGradientCanvas, ShaderGradient } from "@shadergradient/react";
 
 export default function Background() {
     return (
-        <div className="fixed inset-0 -z-10">
+        <div className="fixed inset-0 -z-10 min-h-dvh">
             <ShaderGradientCanvas>
                 <ShaderGradient
                     control="query"
