@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import { CartProvider } from '@/context/CartContext';
 import { Analytics } from '@vercel/analytics/react';
+import Background from "@/components/Background";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,6 +31,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col mx-auto min-h-screen w-full sm:w-5xl`}
       >
+        <Background />
         <CartProvider>
           <Header />
           <main>
