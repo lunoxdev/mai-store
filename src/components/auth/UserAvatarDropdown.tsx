@@ -25,7 +25,7 @@ export default function UserAvatarDropdown({
         <div className="relative" ref={dropdownRef}>
             <button
                 onClick={toggleDropdown}
-                className="flex items-center h-full space-x-2 mr-4 focus:outline-none cursor-pointer transition duration-200 ease-in-out hover:scale-110"
+                className="flex items-center h-full space-x-2 focus:outline-none cursor-pointer transition duration-200 ease-in-out hover:scale-110"
             >
                 {session.user?.user_metadata?.avatar_url || session.user?.user_metadata?.picture ? (
                     <Image
@@ -33,7 +33,7 @@ export default function UserAvatarDropdown({
                         alt="User Avatar"
                         width={32}
                         height={32}
-                        className="h-8 sm:h-11 w-8 sm:w-11 rounded-full border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:text-white shrink-0 object-cover"
+                        className="h-9 sm:h-12 w-9 sm:w-12 rounded-full border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:text-white shrink-0 object-cover"
                     />
                 ) : (
                     <div className="h-8 w-8 rounded-full border bg-neutral-600 flex items-center justify-center text-white text-md font-bold">
