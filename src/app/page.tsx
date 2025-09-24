@@ -45,18 +45,12 @@ export default function Home() {
     }
   }, [products]);
 
-  if (loading) {
-    return <p className="text-center col-span-full text-base sm:text-xl animate-pulse brightness-110">Loading products...</p>;
-  }
-
-  if (error) {
-    return <p className="text-center col-span-full text-base sm:text-xl animate-pulse brightness-110 text-red-500">{error}</p>;
-  }
-
   return (
     <main className="flex flex-col items-center">
       <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       <section ref={productGridRef} className="mt-2 mb-10 w-full grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 p-3">
+        {loading && <p className="text-center col-span-full text-base sm:text-xl animate-pulse brightness-110">Loading products...</p>}
+        {error && <p className="text-center col-span-full text-base sm:text-xl animate-pulse brightness-110 text-red-500">{error}</p>}
         {products
           ?.filter((product: Product) =>
             product.name.toLowerCase().includes(searchQuery.toLowerCase()),
