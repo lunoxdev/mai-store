@@ -25,7 +25,7 @@ export default function UserAvatarDropdown({
         <div className="relative" ref={dropdownRef}>
             <button
                 onClick={toggleDropdown}
-                className="flex items-center h-full space-x-2 focus:outline-none cursor-pointer transition duration-200 ease-in-out hover:scale-110"
+                className="flex items-center h-full space-x-2 mr-2 sm:mr-1 focus:outline-none cursor-pointer transition duration-200 ease-in-out hover:scale-110"
             >
                 {session.user?.user_metadata?.avatar_url || session.user?.user_metadata?.picture ? (
                     <Image

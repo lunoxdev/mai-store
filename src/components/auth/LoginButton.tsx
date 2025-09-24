@@ -12,7 +12,7 @@ export default function LoginButton({ handleLogin }: LoginButtonProps) {
         <button
             onClick={handleLogin}
             aria-label="Iniciar sesión con Google"
-            className="flex items-center h-full space-x-2 mt-2 sm:mt-3 focus:outline-none cursor-pointer transition duration-200 ease-in-out hover:scale-110"
+            className="flex items-center h-full space-x-2 mt-2 mr-2 sm:mr-1 sm:mt-3 focus:outline-none cursor-pointer transition duration-200 ease-in-out hover:scale-110"
         >
             <Image
                 src={GoogleSvg}

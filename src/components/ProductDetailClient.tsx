@@ -43,7 +43,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
     };
 
     return (
-        <section className="my-5 sm:my-10 w-full p-3 mx-auto">
+        <section className="my-0 sm:my-10 w-full p-3 mx-auto">
             <div className="grid lg:grid-cols-2 gap-6">
                 {product.images.length > 0 && (
                     <div
