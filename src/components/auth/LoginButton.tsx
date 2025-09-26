@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import GoogleSvg from "../../../public/google.svg";
+import GoogleSvg from "@/assets/google.svg";
 
 interface LoginButtonProps {
     handleLogin: () => Promise<void>;

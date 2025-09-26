@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import GoogleSvg from "@/assets/google.svg";
 import { useCart } from "@/context/CartContext";
 import { createClient } from "@/utils/supabase/client";
 import { Session } from "@supabase/supabase-js";
@@ -12,7 +13,6 @@ export default function CartSidebar() {
     const { cartItems, removeFromCart, updateQuantity, cartTotal, isCartOpen, closeCart, resetAnimationTrigger, removeItemFromCartPermanently } = useCart();
     const [session, setSession] = useState<Session | null>(null);
     const supabase = createClient();
-    const [comprobanteNumber, setComprobanteNumber] = useState("");
     const cartItemRefs = useRef<{ [key: string]: HTMLLIElement | null }>({});
 
     useEffect(() => {
@@ -48,7 +48,7 @@ export default function CartSidebar() {
         const orderDetails = cartItems
             .map((item) => `${item.name} (x${item.quantity}) - ₡${parseFloat(item.price) * item.quantity}`)
             .join("\n");
-        const message = `¡Hola! Me gustaría confirmar mi pedido:\n\n${orderDetails}\n\nTotal: ₡${cartTotal}\nNúmero de Comprobante: ${comprobanteNumber}\n\n¡Gracias!`;
+        const message = `¡Hola M&M Store! Me gustaría confirmar mi pedido:\n\n${orderDetails}\n\nTotal: ₡${cartTotal}\n\n¡Gracias!`;
         const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
             message
         )}`;
@@ -222,59 +222,26 @@ export default function CartSidebar() {
                             <p className="text-green-500 font-bold">₡{cartTotal}</p>
                         </div>
                         <div className="mt-6">
-                            <div className="bg-black p-4 rounded-md">
-                                <h4 className="text-lg">Pago SINPE Móvil:</h4>
-                                <div className="flex items-center mt-2">
-                                    <span className="font-semibold text-xl">22222222</span>
-                                    <button
-                                        type="button"
-                                        onClick={() => navigator.clipboard.writeText("22222222")}
-                                        className="ml-3 hover:scale-110 cursor-pointer"
-                                    >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="20"
-                                            height="20"
-                                            viewBox="0 0 16 16"
-                                        >
-                                            <path
-                                                fill="#cccccc"
-                                                d="M0 2.729V2a1 1 0 0 1 1-1h2v1H1v12h4v1H1a1 1 0 0 1-1-1zM12 5V2a1 1 0 0 0-1-1H9v1h2v3zm-1 1h2v9H6V6zV5H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-2z"
-                                            />
-                                            <path
-                                                fill="#cccccc"
-                                                d="M7 10h5V9H7zm0-2h5V7H7zm0 4h5v-1H7zm0 2h5v-1H7zM9 2V1a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v1h1V1h4v1zM3 3h6V2H3z"
-                                            />
-                                        </svg>
-                                    </button>
-                                </div>
-                                <p className="mt-4 text-sm text-gray-300">
-                                    Una vez realizado el pago, ingresa el número de comprobante:
-                                </p>
-                                <input
-                                    type="text"
-                                    placeholder="Número de comprobante"
-                                    className="mt-2 w-full p-2 rounded-md border bg-gray-800/40 border-gray-600 outline-none"
-                                    value={comprobanteNumber}
-                                    onChange={(e) => setComprobanteNumber(e.target.value)}
-                                />
-                            </div>
-                        </div>
-                        <div className="mt-6">
                             {session ? (
                                 <button
                                     onClick={handleConfirmOrder}
-                                    disabled={!comprobanteNumber.trim()}
-                                    className="flex items-center justify-center rounded-md border border-transparent bg-green-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-green-700 w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="flex items-center justify-center rounded-md px-6 py-3 text-base sm:text-xl font-semibold bg-gradient-to-br from-green-700 via-green-500 to-green-700 hover:brightness-110 w-full space-x-2 cursor-pointer"
                                 >
-                                    Confirmar Pedido y Enviar
+                                    Enviar Pedido
                                 </button>
                             ) : (
                                 <button
                                     onClick={handleLogin}
-                                    className="flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-blue-700 w-full"
+                                    className="flex items-center justify-center rounded-md px-6 py-3 text-base sm:text-lg font-medium hover:bg-black border hover:brightness-125 w-full space-x-2 cursor-pointer"
                                 >
-                                    Iniciar sesión para confirmar el pedido
+                                    <Image
+                                        src={GoogleSvg}
+                                        alt="Google G Logo"
+                                        width={24}
+                                        height={24}
+                                        className="h-6 w-6"
+                                    />
+                                    <span className=" animate-pulse brightness-125">Iniciar sesión para confirmar el pedido</span>
                                 </button>
                             )}
                         </div>
