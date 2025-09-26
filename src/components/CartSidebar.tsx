@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import GoogleSvg from "@/assets/google.svg";
+import WaSvg from "@/assets/wa.svg";
 import { useCart } from "@/context/CartContext";
 import { createClient } from "@/utils/supabase/client";
 import { Session } from "@supabase/supabase-js";
@@ -225,8 +226,15 @@ export default function CartSidebar() {
                             {session ? (
                                 <button
                                     onClick={handleConfirmOrder}
-                                    className="flex items-center justify-center rounded-md px-6 py-3 text-base sm:text-xl font-semibold bg-gradient-to-br from-green-700 via-green-500 to-green-700 hover:brightness-110 w-full space-x-2 cursor-pointer"
+                                    className="flex items-center justify-center rounded-md px-6 py-3 text-sm sm:text-xl font-semibold bg-gradient-to-br from-green-700 via-green-500 to-green-700 hover:brightness-110 w-full space-x-2 cursor-pointer"
                                 >
+                                    <Image
+                                        src={WaSvg}
+                                        alt="WhatsApp Logo"
+                                        width={24}
+                                        height={24}
+                                        className="h-6 w-6 mr-2"
+                                    />
                                     Enviar Pedido
                                 </button>
                             ) : (
