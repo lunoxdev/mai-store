@@ -5,12 +5,15 @@ import { useCart } from "@/context/CartContext";
 import { createClient } from "@/utils/supabase/client";
 import { Session } from "@supabase/supabase-js";
 import { useState, useEffect } from "react";
+import { gsap } from "gsap";
+import { useRef } from "react";
 
 export default function CartSidebar() {
-    const { cartItems, removeFromCart, updateQuantity, cartTotal, isCartOpen, closeCart } = useCart();
+    const { cartItems, removeFromCart, updateQuantity, cartTotal, isCartOpen, closeCart, resetAnimationTrigger, removeItemFromCartPermanently } = useCart();
     const [session, setSession] = useState<Session | null>(null);
     const supabase = createClient();
     const [comprobanteNumber, setComprobanteNumber] = useState("");
+    const cartItemRefs = useRef<{ [key: string]: HTMLLIElement | null }>({});
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
@@ -27,6 +30,18 @@ export default function CartSidebar() {
             authListener.subscription.unsubscribe();
         };
     }, []);
+
+    useEffect(() => {
+        cartItems.forEach((item) => {
+            const ref = cartItemRefs.current[item.id];
+            if (ref && item.animationTrigger === 'added') {
+                gsap.fromTo(ref, { opacity: 0, x: 50 }, { opacity: 1, x: 0, duration: 0.5, delay: 0.6, onComplete: () => resetAnimationTrigger(item.id) });
+            }
+            else if (ref && item.animationTrigger === 'removed') {
+                gsap.to(ref, { opacity: 0, x: 50, duration: 0.5, onComplete: () => removeItemFromCartPermanently(item.id) });
+            }
+        });
+    }, [cartItems, resetAnimationTrigger, removeItemFromCartPermanently]);
 
     const handleConfirmOrder = () => {
         const phoneNumber = "50672829018"; // WhatsApp number without '+'
@@ -93,7 +108,7 @@ export default function CartSidebar() {
                             ) : (
                                 <ul className="-my-6 divide-y divide-gray-700">
                                     {cartItems.map((product) => (
-                                        <li key={product.id} className="flex py-6">
+                                        <li key={product.id} className="flex py-6" ref={(el) => { cartItemRefs.current[product.id] = el; }}>
                                             <div className="h-24 w-24 flex-shrink-0 relative">
                                                 {product.images.length > 0 && (
                                                     <div

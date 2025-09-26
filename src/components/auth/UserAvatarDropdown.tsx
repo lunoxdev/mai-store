@@ -42,7 +42,7 @@ export default function UserAvatarDropdown({
                 )}
             </button>
             {isDropdownOpen && (
-                <div className="absolute right-14 sm:right-20 -top-2 mt-2 w-40 sm:w-48 bg-[#171717] rounded-md shadow-lg py-1 z-20">
+                <div className="absolute right-14 sm:right-16 top-0 mt-2 w-32 sm:w-48 bg-[#171717] rounded-md shadow-lg py-1 z-20">
                     {userRole === 'admin' && (
                         <a
                             href="/admin"

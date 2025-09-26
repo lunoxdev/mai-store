@@ -5,6 +5,7 @@ import { type Product } from '@/types/product';
 
 interface CartItem extends Product {
     quantity: number;
+    animationTrigger?: 'added' | 'removed' | null;
 }
 
 interface CartContextType {
@@ -19,6 +20,8 @@ interface CartContextType {
     isCartOpen: boolean;
     openCart: () => void;
     closeCart: () => void;
+    resetAnimationTrigger: (productId: string) => void;
+    removeItemFromCartPermanently: (productId: string) => void;
 }
 
 const CartContext = createContext<CartContextType | null>(null);
@@ -52,7 +55,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
                 }
                 // If item exists and can be added, update quantity
                 const updatedItems = prevItems.map((item) =>
-                    item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+                    item.id === product.id ? { ...item, quantity: item.quantity + 1, animationTrigger: null } : item
                 );
                 openCart(); // Open cart sidebar when item is added or quantity updated
                 return updatedItems;
@@ -63,19 +66,23 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
                 }
                 // Add new item to cart
                 openCart(); // Open cart sidebar when new item is added
-                return [...prevItems, { ...product, quantity: 1 }];
+                return [...prevItems, { ...product, quantity: 1, animationTrigger: 'added' as const }];
             }
         });
     };
 
     const removeFromCart = (productId: string) => {
-        setCartItems((prevItems) => prevItems.filter((item) => item.id !== productId));
+        setCartItems((prevItems) =>
+            prevItems.map((item) =>
+                item.id === productId ? { ...item, animationTrigger: 'removed' as const } : item
+            )
+        );
     };
 
     const updateQuantity = (productId: string, quantity: number) => {
         setCartItems((prevItems) =>
             prevItems.map((item) =>
-                item.id === productId ? { ...item, quantity: Math.max(1, quantity) } : item
+                item.id === productId ? { ...item, quantity: Math.max(1, quantity), animationTrigger: null } : item
             )
         );
     };
@@ -92,6 +99,18 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         return item ? item.quantity : 0;
     };
 
+    const resetAnimationTrigger = (productId: string) => {
+        setCartItems((prevItems) =>
+            prevItems.map((item) =>
+                item.id === productId ? { ...item, animationTrigger: null } : item
+            )
+        );
+    };
+
+    const removeItemFromCartPermanently = (productId: string) => {
+        setCartItems((prevItems) => prevItems.filter((item) => item.id !== productId));
+    };
+
     return (
         <CartContext.Provider
             value={{
@@ -106,6 +125,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
                 isCartOpen,
                 openCart,
                 closeCart,
+                resetAnimationTrigger,
+                removeItemFromCartPermanently,
             }}
         >
             {children}
