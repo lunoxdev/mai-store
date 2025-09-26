@@ -16,12 +16,19 @@ interface CartContextType {
     cartCount: number;
     cartTotal: number;
     getProductQuantity: (productId: string) => number;
+    isCartOpen: boolean;
+    openCart: () => void;
+    closeCart: () => void;
 }
 
 const CartContext = createContext<CartContextType | null>(null);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
+    const [isCartOpen, setIsCartOpen] = useState(false);
+
+    const openCart = () => setIsCartOpen(true);
+    const closeCart = () => setIsCartOpen(false);
 
     useEffect(() => {
         const storedCartItems = localStorage.getItem('cartItems');
@@ -43,14 +50,19 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
                 if (existingItem.quantity >= product.units) {
                     return prevItems; // Do not update cart if stock limit is reached
                 }
-                return prevItems.map((item) =>
+                // If item exists and can be added, update quantity
+                const updatedItems = prevItems.map((item) =>
                     item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
                 );
+                openCart(); // Open cart sidebar when item is added or quantity updated
+                return updatedItems;
             } else {
                 // Check if product is in stock before adding new
                 if (product.units <= 0) {
                     return prevItems; // Do not add if out of stock
                 }
+                // Add new item to cart
+                openCart(); // Open cart sidebar when new item is added
                 return [...prevItems, { ...product, quantity: 1 }];
             }
         });
@@ -82,7 +94,19 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     return (
         <CartContext.Provider
-            value={{ cartItems, addToCart, removeFromCart, updateQuantity, clearCart, cartCount, cartTotal, getProductQuantity }}
+            value={{
+                cartItems,
+                addToCart,
+                removeFromCart,
+                updateQuantity,
+                clearCart,
+                cartCount,
+                cartTotal,
+                getProductQuantity,
+                isCartOpen,
+                openCart,
+                closeCart,
+            }}
         >
             {children}
         </CartContext.Provider>

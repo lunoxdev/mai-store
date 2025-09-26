@@ -6,13 +6,8 @@ import { createClient } from "@/utils/supabase/client";
 import { Session } from "@supabase/supabase-js";
 import { useState, useEffect } from "react";
 
-interface CartSidebarProps {
-    isOpen: boolean;
-    onClose: () => void;
-}
-
-export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
-    const { cartItems, removeFromCart, updateQuantity, cartTotal } = useCart();
+export default function CartSidebar() {
+    const { cartItems, removeFromCart, updateQuantity, cartTotal, isCartOpen, closeCart } = useCart();
     const [session, setSession] = useState<Session | null>(null);
     const supabase = createClient();
     const [comprobanteNumber, setComprobanteNumber] = useState("");
@@ -57,14 +52,14 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
         }
     };
 
-    const sidebarClasses = `fixed inset-y-0 right-0 z-50 w-screen max-w-md transform transition-transform duration-500 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"
+    const sidebarClasses = `fixed inset-y-0 right-0 z-50 w-screen max-w-md transform transition-transform duration-500 ease-in-out ${isCartOpen ? "translate-x-0" : "translate-x-full"
         }`;
-    const overlayClasses = `fixed inset-0 bg-black/60 z-20 bg-opacity-75 transition-opacity duration-500 ease-in-out ${isOpen ? "opacity-100" : "opacity-0"
+    const overlayClasses = `fixed inset-0 z-20 bg-opacity-75 transition-opacity duration-500 ease-in-out ${isCartOpen ? "opacity-100" : "opacity-0"
         }`;
 
     return (
         <>
-            {isOpen && <div className={overlayClasses} onClick={onClose} />}
+            {isCartOpen && <div className={overlayClasses} onClick={closeCart} />}
 
             <div className={sidebarClasses}>
                 <section className="flex h-full flex-col overflow-y-auto bg-[#171717] text-white">
@@ -75,7 +70,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                                 <button
                                     type="button"
                                     className="-m-2 p-2 px-2 cursor-pointer outline-none"
-                                    onClick={onClose}
+                                    onClick={closeCart}
                                 >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -101,13 +96,17 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                                         <li key={product.id} className="flex py-6">
                                             <div className="h-24 w-24 flex-shrink-0 relative">
                                                 {product.images.length > 0 && (
-                                                    <Image
-                                                        src={product.images[0].url}
-                                                        alt={product.images[0].alt || product.name}
-                                                        width={96}
-                                                        height={96}
-                                                        className="h-full w-full object-cover rounded-md object-center"
-                                                    />
+                                                    <div
+                                                        className="relative h-full w-full overflow-hidden rounded-lg cursor-pointer p-[0.5px] backdrop-blur-3xl"
+                                                    >
+                                                        <span className='absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,theme(colors.black)_0%,theme(colors.white)_50%,theme(colors.black)_100%)]' />
+                                                        <Image
+                                                            src={product.images[0].url}
+                                                            alt={product.images[0].alt || product.name}
+                                                            fill
+                                                            className="object-cover w-full h-full inline-flex items-center justify-center rounded-md p-1"
+                                                        />
+                                                    </div>
                                                 )}
                                                 <button
                                                     type="button"
@@ -132,11 +131,11 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                                                 <div className="flex-1">
                                                     <div className="flex justify-between font-medium">
                                                         <h3>
-                                                            <a href={`/product/${product.handle}`}>
+                                                            <a href={`/product/${product.handle}`} className="font-bold tracking-tight">
                                                                 {product.name}
                                                             </a>
                                                         </h3>
-                                                        <p>
+                                                        <p className="text-white/90">
                                                             ₡{parseFloat(product.price) * product.quantity}
                                                         </p>
                                                     </div>

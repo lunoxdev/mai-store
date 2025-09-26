@@ -9,11 +9,7 @@ import Image from "next/image";
 import shoppinBag from "@/assets/shopping-cart.svg"
 
 export default function Header() {
-    const [isCartOpen, setIsCartOpen] = useState(false);
-    const { cartCount } = useCart();
-
-    const openCart = () => setIsCartOpen(true);
-    const closeCart = () => setIsCartOpen(false);
+    const { cartCount, openCart } = useCart();
 
     return (
         <header className="flex justify-between items-center p-3 sm:p-2 mt-1 sm:mt-5">
@@ -39,7 +35,7 @@ export default function Header() {
                         </span>
                     )}
                 </div>
-                <CartSidebar isOpen={isCartOpen} onClose={closeCart} />
+                <CartSidebar />
             </div>
         </header>
     );
