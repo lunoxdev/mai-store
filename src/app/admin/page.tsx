@@ -68,7 +68,7 @@ export default function AdminPage() {
     }, []);
 
     const fetchProducts = async () => {
-        const { data, error } = await supabase.from("products").select("*");
+        const { data, error } = await supabase.from("products").select("*").order('created_at', { ascending: false });
         if (error) {
             console.error("Error fetching products:", error);
         } else {
@@ -159,13 +159,13 @@ export default function AdminPage() {
                         className={`py-2 px-4 text-sm sm:text-lg font-medium outline-none cursor-pointer rounded-t-lg transition duration-500 ease-in-out ${activeAdminTab === 'products' ? 'bg-black text-white font-semibold' : 'text-gray-400 hover:text-black'}`}
                         onClick={() => setActiveAdminTab('products')}
                     >
-                        Products
+                        Productos
                     </button>
                     <button
                         className={`py-2 px-4 text-sm sm:text-lg font-medium outline-none cursor-pointer rounded-t-lg transition duration-500 ease-in-out ${activeAdminTab === 'orders' ? 'bg-black text-white font-semibold' : 'text-gray-400 hover:text-black'}`}
                         onClick={() => setActiveAdminTab('orders')}
                     >
-                        Orders
+                        Ordenes
                     </button>
                 </div>
 
@@ -186,31 +186,31 @@ export default function AdminPage() {
                         <div className="flex flex-row gap-2 sm:gap-4">
                             <input
                                 type="text"
-                                placeholder="Search by Order ID"
+                                placeholder="Buscar por número de orden"
                                 value={orderSearchTerm}
                                 onChange={(e) => setOrderSearchTerm(e.target.value)}
                                 className="transition duration-200 w-1/2 sm:w-1/3 px-2 py-1.5 sm:py-2 border border-gray-600 placeholder:text-gray-400 rounded-md outline-none p-2"
                             />
                             <input
                                 type="text"
-                                placeholder="Search by User Email"
+                                placeholder="Buscar por email"
                                 value={emailSearchTerm}
                                 onChange={(e) => setEmailSearchTerm(e.target.value)}
                                 className="transition duration-200 w-1/2 sm:w-1/3 px-2 py-1.5 sm:py-2 border border-gray-600 placeholder:text-gray-400 rounded-md outline-none p-2"
                             />
                         </div>
                         {filteredOrders.length === 0 ? (
-                            <p className="text-center text-lg sm:text-xl text-gray-400 animate-pulse">No orders found</p>
+                            <p className="text-center text-lg sm:text-xl text-gray-400 animate-pulse">No se encontraron órdenes</p>
                         ) : (
                             <div className="overflow-x-auto min-h-screen">
                                 <table className="min-w-full divide-y divide-gray-700">
                                     <thead>
                                         <tr>
-                                            <th className="px-4 py-3 text-center text-xs sm:text-sm font-semibold uppercase tracking-wider bg-black rounded-tl-lg text-white">Order ID</th>
-                                            <th className="px-4 py-3 text-center text-xs sm:text-sm font-semibold uppercase tracking-wider bg-black text-white">User Email</th>
-                                            <th className="px-4 py-3 text-center text-xs sm:text-sm font-semibold uppercase tracking-wider bg-black text-white">Date</th>
+                                            <th className="px-4 py-3 text-center text-xs sm:text-sm font-semibold uppercase tracking-wider bg-black rounded-tl-lg text-white">Orden</th>
+                                            <th className="px-4 py-3 text-center text-xs sm:text-sm font-semibold uppercase tracking-wider bg-black text-white">Email</th>
+                                            <th className="px-4 py-3 text-center text-xs sm:text-sm font-semibold uppercase tracking-wider bg-black text-white">Fecha</th>
                                             <th className="px-4 py-3 text-center text-xs sm:text-sm font-semibold uppercase tracking-wider bg-black text-white">Total</th>
-                                            <th className="px-4 py-3 text-center text-xs sm:text-sm font-semibold uppercase tracking-wider bg-black rounded-tr-lg text-white">Items</th>
+                                            <th className="px-4 py-3 text-center text-xs sm:text-sm font-semibold uppercase tracking-wider bg-black rounded-tr-lg text-white">Artículos</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-700">
@@ -223,7 +223,7 @@ export default function AdminPage() {
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm sm:text-base">
                                                     <details className="group">
                                                         <summary className="flex items-center cursor-pointer list-none">
-                                                            View Items
+                                                            Ver productos
                                                             <svg className="w-4 h-4 text-gray-400 transform group-open:rotate-180 transition-transform duration-200 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                                                             </svg>

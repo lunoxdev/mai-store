@@ -25,9 +25,10 @@ export default function AddProductForm({
     const [newProductDescription, setNewProductDescription] = useState("");
     const [newProductUnits, setNewProductUnits] = useState("");
     const [newProductImages, setNewProductImages] = useState<ImageFileWithPreview[]>([]);
-    const [newProductAvailable, setNewProductAvailable] = useState<boolean>(true);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleAddProduct = async () => {
+        setIsLoading(true);
         const uploadedImages: ProductImage[] = [];
 
         for (const imageFile of newProductImages) {
@@ -40,6 +41,7 @@ export default function AddProductForm({
 
             if (error) {
                 console.error("Error uploading image:", error.message);
+                setIsLoading(false);
                 return;
             }
 
@@ -57,10 +59,11 @@ export default function AddProductForm({
             description: newProductDescription,
             units: parseInt(newProductUnits || "0"),
             images: uploadedImages,
-            available: newProductAvailable,
+            available: true,
         });
         if (error) {
             console.error("Error adding product:", error.message);
+            setIsLoading(false);
         } else {
             setNewProductName("");
             setNewProductPrice("");
@@ -68,8 +71,9 @@ export default function AddProductForm({
             setNewProductUnits("");
             newProductImages.forEach((image) => URL.revokeObjectURL(image.previewUrl)); // Clean up preview URLs
             setNewProductImages([]);
-            setNewProductAvailable(true);
             onClose(); // Close modal after adding product
+            onProductAdded(); // Notify parent component that product was added
+            setIsLoading(false);
         }
     };
 
@@ -101,7 +105,7 @@ export default function AddProductForm({
         >
             <div
                 onClick={(e) => e.stopPropagation()}
-                className="w-full sm:w-1/3 2xl:w-1/4 px-6 py-12 bg-white/60 backdrop-blur-lg rounded-xl shadow-2xl">
+                className="w-full sm:w-1/3 2xl:w-1/4 px-4 sm:px-6 py-6 sm:py-12 bg-white/60 backdrop-blur-lg rounded-xl shadow-2xl">
                 <button
                     className="absolute top-3 right-3 text-gray-600 hover:text-gray-800 text-2xl cursor-pointer hover:scale-110"
                     onClick={onClose}
@@ -118,24 +122,24 @@ export default function AddProductForm({
                         />
                     </svg>
                 </button>
-                <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center">Add New Product</h2>
+                <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center">Añadir Nuevo Producto</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <input
                         type="text"
-                        placeholder="Product Name"
+                        placeholder="Nombre del Producto"
                         value={newProductName}
                         onChange={(e) => setNewProductName(e.target.value)}
                         className="text-sm sm:text-base p-3 bg-white/50 placeholder:text-gray-600 rounded-md outline-none transition duration-200"
                     />
                     <input
                         type="number"
-                        placeholder="Price"
+                        placeholder="Precio"
                         value={newProductPrice}
                         onChange={(e) => setNewProductPrice(e.target.value)}
                         className="text-sm sm:text-base p-3 bg-white/50 placeholder:text-gray-600 rounded-md outline-none transition duration-200"
                     />
                     <textarea
-                        placeholder="Description"
+                        placeholder="Descripción"
                         value={newProductDescription}
                         onChange={(e) => setNewProductDescription(e.target.value)}
                         className="text-sm sm:text-base p-3 bg-white/50 placeholder-gray-600 rounded-md outline-none transition duration-200 md:col-span-2"
@@ -143,7 +147,7 @@ export default function AddProductForm({
                     ></textarea>
                     <input
                         type="number"
-                        placeholder="Units"
+                        placeholder="Unidades"
                         value={newProductUnits}
                         onChange={(e) => setNewProductUnits(e.target.value)}
                         className="text-sm sm:text-base p-3 bg-white/50 placeholder-gray-600 rounded-md outline-none transition duration-200 w-1/3 sm:w-2/3"
@@ -153,9 +157,17 @@ export default function AddProductForm({
                             type="file"
                             id="new-product-images"
                             onChange={handleAddNewImageFile}
-                            className="block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-black file:text-white hover:file:brightness-150 cursor-pointer"
+                            className="hidden"
                             accept="image/*"
                         />
+                        <label htmlFor="new-product-images" className="cursor-pointer block w-full text-sm text-neutral-800 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-black file:text-white hover:file:brightness-150">
+                            <span className="inline-block bg-black text-white py-2 px-4 rounded-lg font-semibold cursor-pointer hover:brightness-150">
+                                Seleccionar imagen
+                            </span>
+                            <span className="ml-3 text-neutral-700">
+                                {newProductImages.length > 0 ? newProductImages[0].name : ""}
+                            </span>
+                        </label>
                     </div>
                     <div className="flex flex-wrap gap-3 mt-2 md:col-span-2">
                         {newProductImages.map((imageFile, index) => (
@@ -171,36 +183,12 @@ export default function AddProductForm({
                             </div>
                         ))}
                     </div>
-                    <label className="flex items-center space-x-2 text-neutral-800 md:col-span-2 cursor-pointer relative">
-                        <input
-                            type="checkbox"
-                            checked={newProductAvailable}
-                            onChange={(e) => setNewProductAvailable(e.target.checked)}
-                            className="absolute opacity-0 w-5 h-5"
-                        />
-                        <span className="flex items-center justify-center h-5 w-5 border rounded transition duration-200 ease-in-out flex-shrink-0 focus:ring-2 focus:ring-gray-500"
-                            style={{ backgroundColor: newProductAvailable ? 'black' : 'white', borderColor: newProductAvailable ? 'black' : 'gray' }}>
-                            {newProductAvailable && (
-                                <svg
-                                    className="h-4 w-4 text-white pointer-events-none"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                            )}
-                        </span>
-                        <span className="text-neutral-800 text-base">Available</span>
-                    </label>
                     <button
                         onClick={handleAddProduct}
-                        className="col-span-1 md:col-span-2 border hover:bg-black hover:text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform shadow-lg cursor-pointer"
+                        disabled={isLoading}
+                        className={`col-span-1 md:col-span-2 border font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform shadow-lg ${isLoading ? "cursor-not-allowed opacity-50 bg-black text-white" : "hover:bg-black hover:text-white cursor-pointer"}`}
                     >
-                        Add Product
+                        {isLoading ? "Subiendo..." : "Añadir Producto"}
                     </button>
                 </div>
             </div>

@@ -68,10 +68,10 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                     <p className="mt-4 sm:text-xl">{product.description}</p>
                     {product.units > 0 ? (
                         <p className="mt-2 sm:text-xl text-green-500 font-semibold">
-                            Units in stock: {product.units}
+                            Unidades en stock: {product.units}
                         </p>
                     ) : (
-                        <p className="mt-2 text-red-500 sm:text-xl">Out of stock</p>
+                        <p className="mt-2 text-red-500 sm:text-xl">Agotado</p>
                     )}
                     <div className="mt-3 sm:mt-6 flex items-center" ref={addToCartRef}>
                         <AddToCartButton product={product} />
@@ -80,7 +80,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
             </div>
             {relatedProducts && relatedProducts.length > 0 && (
                 <section className="mt-12 mx-auto">
-                    <h2 className="text-2xl font-bold">Related Products</h2>
+                    <h2 className="text-2xl font-bold">Productos Relacionados</h2>
                     <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3">
                         {relatedProducts.map((relatedProduct: Product, index) => (
                             <ProductCard

@@ -158,7 +158,7 @@ export default function ProductListTable({ products, onEdit, onDelete, onProduct
             <div className="flex justify-between items-center mb-4">
                 <input
                     type="text"
-                    placeholder="Search products..."
+                    placeholder="Buscar productos..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="transition duration-200 w-1/2 sm:w-1/3 px-2 py-1.5 sm:py-2 border border-gray-600 placeholder:text-gray-600 rounded-md outline-none"
@@ -167,20 +167,20 @@ export default function ProductListTable({ products, onEdit, onDelete, onProduct
                     onClick={onAddProductClick}
                     className="px-4 py-2 bg-black text-white text-sm sm:text-base font-semibold rounded-lg border border-black transition-all duration-300 ease-in-out hover:bg-neutral-800 hover:scale-105 cursor-pointer"
                 >
-                    + Add Product
+                    + Añadir
                 </button>
             </div>
             <div className="overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden my-5">
                 <table className="min-w-full bg-white/50 rounded-xl shadow-md">
                     <thead className="rounded-t-2xl">
                         <tr className="bg-black text-white uppercase text-sm leading-normal rounded-t-2xl shrink-0">
-                            <th className="rounded-tl-lg py-3 px-3 text-xs sm:text-sm text-left tracking-wider w-24 sm:w-32">Image</th>
-                            <th className="py-3 px-3 text-xs sm:text-sm text-left tracking-wider">Product Name</th>
-                            <th className="py-3 px-3 text-xs sm:text-sm text-left tracking-wider">Price</th>
-                            <th className="py-3 px-3 text-xs sm:text-sm text-left tracking-wider">Description</th>
-                            <th className="py-3 px-3 text-xs sm:text-sm text-left tracking-wider">Units</th>
-                            <th className="py-3 px-3 text-xs sm:text-sm text-left tracking-wider">Available</th>
-                            <th className="rounded-tr-lg py-3 px-3 text-xs sm:text-sm text-left tracking-wider">Actions</th>
+                            <th className="rounded-tl-lg py-3 px-3 text-xs sm:text-sm text-center tracking-wider w-24 sm:w-32">Imagen</th>
+                            <th className="py-3 px-3 text-xs sm:text-sm text-center tracking-wider">Nombre</th>
+                            <th className="py-3 px-3 text-xs sm:text-sm text-center tracking-wider">Precio</th>
+                            <th className="py-3 px-3 text-xs sm:text-sm text-center tracking-wider">Descripción</th>
+                            <th className="py-3 px-3 text-xs sm:text-sm text-center tracking-wider">Unidades</th>
+                            <th className="py-3 px-3 text-xs sm:text-sm text-center tracking-wider">Disponible</th>
+                            <th className="rounded-tr-lg py-3 px-3 text-xs sm:text-sm text-center tracking-wider">Acciones</th>
                         </tr>
                     </thead>
                     <tbody className="text-sm font-light h-full">
@@ -191,7 +191,7 @@ export default function ProductListTable({ products, onEdit, onDelete, onProduct
                                         <img src={product.images[0].url} alt={product.images[0].alt || ""} className="w-14 h-14 sm:w-24 sm:h-24 object-cover rounded-md" />
                                     )}
                                 </td>
-                                <td className="py-3 px-6 text-left">
+                                <td className="py-3 px-6 text-center">
                                     {editingProductId === product.id ? (
                                         <input
                                             type="text"
@@ -203,7 +203,7 @@ export default function ProductListTable({ products, onEdit, onDelete, onProduct
                                         <p className="font-semibold">{product.name}</p>
                                     )}
                                 </td>
-                                <td className="py-3 px-6 text-left">
+                                <td className="py-3 px-6 text-center">
                                     {editingProductId === product.id ? (
                                         <input
                                             type="number"
@@ -215,7 +215,7 @@ export default function ProductListTable({ products, onEdit, onDelete, onProduct
                                         <p>${product.price}</p>
                                     )}
                                 </td>
-                                <td className="py-3 px-6 text-left">
+                                <td className="py-3 px-6 text-center">
                                     {editingProductId === product.id ? (
                                         <textarea
                                             value={editedProductDescription}
@@ -226,7 +226,7 @@ export default function ProductListTable({ products, onEdit, onDelete, onProduct
                                         <p className="truncate w-48">{product.description}</p>
                                     )}
                                 </td>
-                                <td className="py-3 px-6 text-left">
+                                <td className="py-3 px-6 text-center">
                                     {editingProductId === product.id ? (
                                         <input
                                             type="number"
@@ -238,7 +238,7 @@ export default function ProductListTable({ products, onEdit, onDelete, onProduct
                                         <p>{product.units}</p>
                                     )}
                                 </td>
-                                <td className="py-3 px-6 text-left">
+                                <td className="py-3 px-6 text-center">
                                     {editingProductId === product.id ? (
                                         <input
                                             type="checkbox"
@@ -248,7 +248,7 @@ export default function ProductListTable({ products, onEdit, onDelete, onProduct
                                         />
                                     ) : (
                                         <span className={product.available ? "text-green-600" : "text-red-600"}>
-                                            {product.available ? "Yes" : "No"}
+                                            {product.available ? "Sí" : "No"}
                                         </span>
                                     )}
                                 </td>
@@ -259,13 +259,13 @@ export default function ProductListTable({ products, onEdit, onDelete, onProduct
                                                 onClick={() => handleSaveProduct(product.id)}
                                                 className="bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded-lg text-xs transition duration-300"
                                             >
-                                                Save
+                                                Guardar
                                             </button>
                                             <button
                                                 onClick={handleCancelEdit}
                                                 className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-1 px-3 rounded-lg text-xs transition duration-300"
                                             >
-                                                Cancel
+                                                Cancelar
                                             </button>
                                         </div>
                                     ) : (
@@ -274,13 +274,13 @@ export default function ProductListTable({ products, onEdit, onDelete, onProduct
                                                 onClick={() => handleEditProduct(product)}
                                                 className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-1 px-3 rounded-lg text-xs transition duration-300 cursor-pointer"
                                             >
-                                                Edit
+                                                Editar
                                             </button>
                                             <button
                                                 onClick={() => onDelete(product.id)}
                                                 className="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-lg text-xs transition duration-300 cursor-pointer"
                                             >
-                                                Delete
+                                                Eliminar
                                             </button>
                                         </div>
                                     )}
@@ -290,7 +290,7 @@ export default function ProductListTable({ products, onEdit, onDelete, onProduct
                         {products.length === 0 && (
                             <tr>
                                 <td colSpan={7} className="py-4 px-2 sm:px-0 text-start sm:text-center col-span-full text-base sm:text-xl animate-pulse brightness-110">
-                                    No products found.
+                                    No se encontraron productos.
                                 </td>
                             </tr>
                         )}

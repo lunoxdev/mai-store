@@ -30,7 +30,7 @@ export default function UserAvatarDropdown({
                 {session.user?.user_metadata?.avatar_url || session.user?.user_metadata?.picture ? (
                     <Image
                         src={session.user.user_metadata.avatar_url || session.user.user_metadata.picture}
-                        alt="User Avatar"
+                        alt="Avatar de Usuario"
                         width={32}
                         height={32}
                         className="h-9 sm:h-12 w-9 sm:w-12 rounded-full border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:text-white shrink-0 object-cover"
@@ -46,16 +46,16 @@ export default function UserAvatarDropdown({
                     {userRole === 'admin' && (
                         <a
                             href="/admin"
-                            className="block w-full text-left px-4 py-2 text-sm text-neutral-200 hover:bg-black hover:brightness-150 ursor-pointer transition duration-300 ease-in-out"
+                            className="block w-full text-left px-4 py-2 text-sm text-neutral-200 font-semibold hover:bg-black hover:brightness-150 ursor-pointer transition duration-300 ease-in-out"
                         >
-                            Admin Panel
+                            Panel de Administrador
                         </a>
                     )}
                     <button
                         onClick={handleLogout}
-                        className="block w-full text-left px-4 py-2 text-sm text-neutral-200 hover:bg-black hover:brightness-150 cursor-pointer border-t border-gray-700 transition duration-300 ease-in-out"
+                        className="block w-full text-left px-4 py-2 text-sm text-neutral-200 font-semibold hover:bg-black hover:brightness-150 cursor-pointer border-t border-gray-700 transition duration-300 ease-in-out"
                     >
-                        Logout
+                        Cerrar Sesión
                     </button>
                 </div>
             )}

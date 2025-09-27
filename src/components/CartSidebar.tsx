@@ -17,6 +17,7 @@ export default function CartSidebar() {
     const cartItemRefs = useRef<{ [key: string]: HTMLLIElement | null }>({});
     const [orders, setOrders] = useState<any[]>([]);
     const orderItemRefs = useRef<{ [key: string]: HTMLLIElement | null }>({});
+    const [isLoadingOrders, setIsLoadingOrders] = useState(false);
 
     // Removed useEffect to set activeTab on isCartOpen change
 
@@ -100,6 +101,7 @@ export default function CartSidebar() {
     useEffect(() => {
         if (activeTab === 'history' && session) {
             const fetchOrders = async () => {
+                setIsLoadingOrders(true);
                 const { data, error } = await supabase
                     .from('orders')
                     .select('id, display_id, order_date, total_amount, items')
@@ -107,8 +109,10 @@ export default function CartSidebar() {
                     .order('order_date', { ascending: false });
                 if (error) {
                     console.error("Error fetching orders:", error);
+                    setIsLoadingOrders(false);
                 } else {
                     setOrders(data);
+                    setIsLoadingOrders(false);
                 }
             };
             fetchOrders();
@@ -207,14 +211,14 @@ export default function CartSidebar() {
                                     className={`py-2 px-4 text-sm sm:text-lg font-medium outline-none cursor-pointer transition duration-500 ease-in-out ${activeTab === 'cart' ? 'border-b-2 border-white' : 'text-gray-400 hover:text-white'}`}
                                     onClick={() => setActiveTab('cart')}
                                 >
-                                    My Cart
+                                    Mi Carrito
                                 </button>
                                 {session && (
                                     <button
                                         className={`py-2 px-4 text-sm sm:text-lg font-medium outline-none cursor-pointer transition duration-500 ease-in-out ${activeTab === 'history' ? 'border-b-2 border-white' : 'text-gray-400 hover:text-white'}`}
                                         onClick={() => setActiveTab('history')}
                                     >
-                                        History
+                                        Historial
                                     </button>
                                 )}
                             </div>
@@ -242,7 +246,7 @@ export default function CartSidebar() {
                         {activeTab === 'cart' ? (
                             <div className="mt-8">
                                 {cartItems.length === 0 ? (
-                                    <p className="text-center text-base sm:text-xl text-gray-400 animate-pulse">Your cart is empty.</p>
+                                    <p className="text-center text-base sm:text-xl text-gray-400 animate-pulse">Tu carrito está vacío.</p>
                                 ) : (
                                     <ul className="-my-6 divide-y divide-gray-700">
                                         {cartItems.map((product) => (
@@ -355,15 +359,19 @@ export default function CartSidebar() {
                             </div>
                         ) : (
                             <div className="mt-8">
-                                {orders.length === 0 ? (
-                                    <p className="text-base sm:text-xl text-center text-gray-400 animate-pulse">No orders found.</p>
+                                {isLoadingOrders ? (
+                                    <div className="min-h-40 flex items-center justify-center animate-pulse">
+                                        Cargando historial..
+                                    </div>
+                                ) : orders.length === 0 ? (
+                                    <p className="text-base sm:text-xl text-center text-gray-400 animate-pulse">No se encontraron órdenes.</p>
                                 ) : (
                                     <ul className="-my-6 divide-y divide-gray-700">
                                         {orders.map((order) => (
                                             <li key={order.id} className={`flex flex-col py-6 ${activeTab === 'history' ? 'opacity-0 translate-y-5' : ''}`} ref={(el) => { orderItemRefs.current[order.id] = el; }}>
                                                 <details className="group">
                                                     <summary className="flex justify-between items-center cursor-pointer list-none py-2 px-4 rounded-md transition-colors duration-200 outline-none">
-                                                        <p className="text-sm sm:text-base font-medium">Order ID: {order.display_id || "M&M-" + order.id.substring(0, 8)} - {new Date(order.order_date).toLocaleDateString()}</p>
+                                                        <p className="text-sm sm:text-base font-medium">Orden: {order.display_id || "M&M-" + order.id.substring(0, 8)} - {new Date(order.order_date).toLocaleDateString()}</p>
                                                         <p className="text-green-500 font-bold">₡{order.total_amount}</p>
                                                         <svg className="w-5 h-5 text-gray-400 transform group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
@@ -411,7 +419,7 @@ export default function CartSidebar() {
                                     >
                                         <Image
                                             src={WaSvg}
-                                            alt="WhatsApp Logo"
+                                            alt="Logo de WhatsApp"
                                             width={24}
                                             height={24}
                                             className="h-6 w-6 mr-2"
@@ -425,7 +433,7 @@ export default function CartSidebar() {
                                     >
                                         <Image
                                             src={GoogleSvg}
-                                            alt="Google G Logo"
+                                            alt="Logo G de Google"
                                             width={24}
                                             height={24}
                                             className="h-6 w-6"
