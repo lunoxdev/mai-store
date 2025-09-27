@@ -22,7 +22,7 @@ export default async function Page({ params: resolvedParams }: { params: Promise
         .from("products")
         .select("*")
         .neq("handle", id) // Exclude the current product
-        .limit(3); // Limit to 3 related products
+        .limit(20); // Limit to 20 related products
 
     if (relatedProductsError) {
         console.error("Error fetching related products:", relatedProductsError);

@@ -6,6 +6,7 @@ import { type Product } from "@/types/product";
 import ProductCard from "@/components/ProductCard";
 import AddToCartButton from "@/components/AddToCartButton";
 import { gsap } from 'gsap';
+import { InfiniteMovingCards } from "@/components/ui/InfiniteMovingCards";
 
 interface ProductDetailClientProps {
     product: Product;
@@ -81,14 +82,21 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
             {relatedProducts && relatedProducts.length > 0 && (
                 <section className="mt-12 mx-auto">
                     <h2 className="text-2xl font-bold">Productos Relacionados</h2>
-                    <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3">
-                        {relatedProducts.map((relatedProduct: Product, index) => (
-                            <ProductCard
-                                key={relatedProduct.id}
-                                product={relatedProduct}
-                                ref={(el: HTMLAnchorElement | null): void => { relatedProductsRefs.current[index] = el; }}
-                            />
-                        ))}
+                    <div className="mt-6">
+                        <InfiniteMovingCards
+                            items={relatedProducts.map(product => ({
+                                id: product.id, // Add product ID
+                                quote: product.description || "",
+                                name: product.name,
+                                title: `₡${parseFloat(product.price).toFixed(2)}`,
+                                image: product.images[0]?.url || "", // Add image URL
+                                handle: product.handle, // Add product handle
+                            }))}
+                            direction="left"
+                            speed="slow"
+                            pauseOnHover={true}
+                            className=""
+                        />
                     </div>
                 </section>
             )}
