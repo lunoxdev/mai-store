@@ -20,6 +20,12 @@ export default function CartSidebar() {
     const orderItemRefs = useRef<{ [key: string]: HTMLLIElement | null }>({});
 
     useEffect(() => {
+        if (isCartOpen) {
+            setActiveTab('cart');
+        }
+    }, [isCartOpen]);
+
+    useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);
         });
