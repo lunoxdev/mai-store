@@ -138,13 +138,13 @@ export default function AdminPage() {
             <section className="min-h-screen my-0 sm:my-10 mx-2 px-3 py-4 bg-white/20 backdrop-blur-2xl rounded-xl shadow-2xl">
                 <div className="flex border-b border-gray-700 mb-4">
                     <button
-                        className={`py-2 px-4 text-lg font-medium ${activeAdminTab === 'products' ? 'border-b-2 border-white' : 'text-gray-400'}`}
+                        className={`py-2 px-4 text-sm sm:text-lg font-medium outline-none cursor-pointer rounded-t-lg transition duration-500 ease-in-out ${activeAdminTab === 'products' ? 'bg-black text-white font-semibold' : 'text-gray-400 hover:text-black'}`}
                         onClick={() => setActiveAdminTab('products')}
                     >
                         Products
                     </button>
                     <button
-                        className={`py-2 px-4 text-lg font-medium ${activeAdminTab === 'orders' ? 'border-b-2 border-white' : 'text-gray-400'}`}
+                        className={`py-2 px-4 text-sm sm:text-lg font-medium outline-none cursor-pointer rounded-t-lg transition duration-500 ease-in-out ${activeAdminTab === 'orders' ? 'bg-black text-white font-semibold' : 'text-gray-400 hover:text-black'}`}
                         onClick={() => setActiveAdminTab('orders')}
                     >
                         Orders
@@ -165,44 +165,44 @@ export default function AdminPage() {
 
                 {activeAdminTab === 'orders' && (
                     <div className="space-y-4">
-                        <div className="flex flex-col sm:flex-row gap-4">
+                        <div className="flex flex-row gap-2 sm:gap-4">
                             <input
                                 type="text"
                                 placeholder="Search by Order ID"
                                 value={orderSearchTerm}
                                 onChange={(e) => setOrderSearchTerm(e.target.value)}
-                                className="w-full p-2 rounded-md bg-gray-800 text-white border border-gray-700"
+                                className="transition duration-200 w-1/2 sm:w-1/3 px-2 py-1.5 sm:py-2 border border-gray-600 placeholder:text-gray-400 rounded-md outline-none p-2"
                             />
                             <input
                                 type="text"
                                 placeholder="Search by User Email"
                                 value={emailSearchTerm}
                                 onChange={(e) => setEmailSearchTerm(e.target.value)}
-                                className="w-full p-2 rounded-md bg-gray-800 text-white border border-gray-700"
+                                className="transition duration-200 w-1/2 sm:w-1/3 px-2 py-1.5 sm:py-2 border border-gray-600 placeholder:text-gray-400 rounded-md outline-none p-2"
                             />
                         </div>
-                        {orders.length === 0 ? (
-                            <p className="text-center text-gray-400">No orders found.</p>
+                        {filteredOrders.length === 0 ? (
+                            <p className="text-center text-lg sm:text-xl text-gray-400 animate-pulse">No orders found</p>
                         ) : (
                             <div className="overflow-x-auto">
                                 <table className="min-w-full divide-y divide-gray-700">
                                     <thead>
                                         <tr>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Order ID</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">User Email</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Date</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Total</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Items</th>
+                                            <th className="px-4 py-3 text-center text-xs sm:text-sm font-semibold uppercase tracking-wider bg-black rounded-tl-lg text-white">Order ID</th>
+                                            <th className="px-4 py-3 text-center text-xs sm:text-sm font-semibold uppercase tracking-wider bg-black text-white">User Email</th>
+                                            <th className="px-4 py-3 text-center text-xs sm:text-sm font-semibold uppercase tracking-wider bg-black text-white">Date</th>
+                                            <th className="px-4 py-3 text-center text-xs sm:text-sm font-semibold uppercase tracking-wider bg-black text-white">Total</th>
+                                            <th className="px-4 py-3 text-center text-xs sm:text-sm font-semibold uppercase tracking-wider bg-black rounded-tr-lg text-white">Items</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-700">
                                         {filteredOrders.map((order) => (
                                             <tr key={order.id}>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{order.id.substring(0, 8)}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{order.profiles?.email || 'N/A'}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{new Date(order.order_date).toLocaleDateString()}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-green-500">₡{order.total_amount}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm sm:text-base">{order.id.substring(0, 8)}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm sm:text-base">{order.profiles?.email || 'N/A'}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm sm:text-base">{new Date(order.order_date).toLocaleDateString()}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm">₡{order.total_amount}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm sm:text-base">
                                                     <details className="group">
                                                         <summary className="flex items-center cursor-pointer list-none">
                                                             View Items
@@ -210,7 +210,7 @@ export default function AdminPage() {
                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                                                             </svg>
                                                         </summary>
-                                                        <div className="mt-2 p-2 bg-gray-800 rounded-md">
+                                                        <div className="mt-2 p-2 border rounded-md overflow-x-scroll [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                                                             {order.items.map((item: any, index: number) => (
                                                                 <div key={index} className="flex items-center mt-1">
                                                                     {item.image && (
