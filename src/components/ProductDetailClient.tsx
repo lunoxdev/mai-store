@@ -47,7 +47,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
             <div className="grid lg:grid-cols-2 gap-6">
                 {product.images.length > 0 && (
                     <div
-                        className="relative h-[450px] sm:h-[600px] w-full overflow-hidden rounded-lg cursor-pointer p-[1px] backdrop-blur-3xl"
+                        className="relative h-[350px] sm:h-[600px] w-full overflow-hidden rounded-lg cursor-pointer p-[1px] backdrop-blur-3xl"
                         onClick={toggleImageEnlargement}
                         ref={imageRef}
                     >
@@ -73,7 +73,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                     ) : (
                         <p className="mt-2 text-red-500 sm:text-xl">Out of stock</p>
                     )}
-                    <div className="mt-6 flex items-center" ref={addToCartRef}>
+                    <div className="mt-3 sm:mt-6 flex items-center" ref={addToCartRef}>
                         <AddToCartButton product={product} />
                     </div>
                 </div>
