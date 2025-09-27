@@ -17,6 +17,7 @@ export default function CartSidebar() {
     const cartItemRefs = useRef<{ [key: string]: HTMLLIElement | null }>({});
     const [activeTab, setActiveTab] = useState('cart');
     const [orders, setOrders] = useState<any[]>([]);
+    const orderItemRefs = useRef<{ [key: string]: HTMLLIElement | null }>({});
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
@@ -77,6 +78,23 @@ export default function CartSidebar() {
             }
         });
     }, [cartItems, resetAnimationTrigger, removeItemFromCartPermanently]);
+
+    useEffect(() => {
+        if (activeTab === 'history' && orders.length > 0) {
+            const elements = Object.values(orderItemRefs.current);
+
+            // Animate elements into view
+            gsap.to(elements,
+                { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: "power3.out" }
+            );
+        } else if (activeTab !== 'history') {
+            // Reset opacity and position when switching away from history tab
+            const elementsToReset = Object.values(orderItemRefs.current).filter(Boolean);
+            if (elementsToReset.length > 0) {
+                gsap.set(elementsToReset, { opacity: 1, y: 0 });
+            }
+        }
+    }, [activeTab, orders]);
 
     useEffect(() => {
         if (activeTab === 'history' && session) {
@@ -341,7 +359,7 @@ export default function CartSidebar() {
                                 ) : (
                                     <ul className="-my-6 divide-y divide-gray-700">
                                         {orders.map((order) => (
-                                            <li key={order.id} className="flex flex-col py-6">
+                                            <li key={order.id} className={`flex flex-col py-6 ${activeTab === 'history' ? 'opacity-0 translate-y-5' : ''}`} ref={(el) => { orderItemRefs.current[order.id] = el; }}>
                                                 <details className="group">
                                                     <summary className="flex justify-between items-center cursor-pointer list-none py-2 px-4 rounded-md transition-colors duration-200 outline-none">
                                                         <p className="text-sm sm:text-base font-medium">Order ID: {order.display_id || "M&M-" + order.id.substring(0, 8)} - {new Date(order.order_date).toLocaleDateString()}</p>
@@ -352,7 +370,7 @@ export default function CartSidebar() {
                                                     </summary>
                                                     <div className="mt-2 px-4 py-2">
                                                         {order.items.map((item: any, index: number) => (
-                                                            <div key={index} className="flex items-center mt-0 space-y-4">
+                                                            <div key={`${order.id}-${item.id}`} className="flex items-center mt-0 space-y-4">
                                                                 {item.image && (
                                                                     <Image
                                                                         src={item.image}
