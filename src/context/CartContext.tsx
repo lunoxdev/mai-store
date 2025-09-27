@@ -22,6 +22,8 @@ interface CartContextType {
     closeCart: () => void;
     resetAnimationTrigger: (productId: string) => void;
     removeItemFromCartPermanently: (productId: string) => void;
+    activeTab: string;
+    setActiveTab: (tab: string) => void;
 }
 
 const CartContext = createContext<CartContextType | null>(null);
@@ -29,8 +31,12 @@ const CartContext = createContext<CartContextType | null>(null);
 export const CartProvider = ({ children }: { children: ReactNode }) => {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState('cart');
 
-    const openCart = () => setIsCartOpen(true);
+    const openCart = () => {
+        setIsCartOpen(true);
+        setActiveTab('cart');
+    };
     const closeCart = () => setIsCartOpen(false);
 
     useEffect(() => {
@@ -127,6 +133,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
                 closeCart,
                 resetAnimationTrigger,
                 removeItemFromCartPermanently,
+                activeTab,
+                setActiveTab,
             }}
         >
             {children}

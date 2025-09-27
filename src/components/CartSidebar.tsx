@@ -11,19 +11,14 @@ import { gsap } from "gsap";
 import { useRef } from "react";
 
 export default function CartSidebar() {
-    const { cartItems, removeFromCart, updateQuantity, cartTotal, isCartOpen, closeCart, resetAnimationTrigger, removeItemFromCartPermanently, clearCart } = useCart();
+    const { cartItems, removeFromCart, updateQuantity, cartTotal, isCartOpen, closeCart, resetAnimationTrigger, removeItemFromCartPermanently, clearCart, activeTab, setActiveTab } = useCart();
     const [session, setSession] = useState<Session | null>(null);
     const supabase = createClient();
     const cartItemRefs = useRef<{ [key: string]: HTMLLIElement | null }>({});
-    const [activeTab, setActiveTab] = useState('cart');
     const [orders, setOrders] = useState<any[]>([]);
     const orderItemRefs = useRef<{ [key: string]: HTMLLIElement | null }>({});
 
-    useEffect(() => {
-        if (isCartOpen) {
-            setActiveTab('cart');
-        }
-    }, [isCartOpen]);
+    // Removed useEffect to set activeTab on isCartOpen change
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
