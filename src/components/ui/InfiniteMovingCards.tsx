@@ -92,11 +92,14 @@ export const InfiniteMovingCards = ({
             >
                 {items.map((item, idx) => (
                     <Link
-                        href={`/product/${item.handle}`}
+                        href={`/products?category=${item.handle}`}
                         key={item.id}
-                        className="relative h-64 w-[250px] max-w-full flex-shrink-0 rounded-lg overflow-hidden cursor-pointer hover:scale-110 transition duration-300 ease-in-out"
+                        className={cn(
+                            "relative flex-shrink-0 rounded-lg overflow-hidden",
+                            item.image ? "h-64 w-[250px] max-w-full" : "w-auto px-4 py-2 items-center justify-center"
+                        )}
                     >
-                        {item.image && (
+                        {item.image ? (
                             <div className="relative h-full w-full">
                                 <Image
                                     src={item.image}
@@ -108,6 +111,10 @@ export const InfiniteMovingCards = ({
                                     <p className="text-lg font-semibold">{item.name}</p>
                                     <p className="text-sm">{item.title}</p>
                                 </div>
+                            </div>
+                        ) : (
+                            <div className="flex items-center justify-center h-full w-full text-center">
+                                <p className="text-lg font-semibold whitespace-nowrap">{item.name}</p>
                             </div>
                         )}
                     </Link>
