@@ -184,7 +184,7 @@ export default function AdminPage() {
                         {filteredOrders.length === 0 ? (
                             <p className="text-center text-lg sm:text-xl text-gray-400 animate-pulse">No orders found</p>
                         ) : (
-                            <div className="overflow-x-auto">
+                            <div className="overflow-x-auto min-h-screen">
                                 <table className="min-w-full divide-y divide-gray-700">
                                     <thead>
                                         <tr>
@@ -198,7 +198,7 @@ export default function AdminPage() {
                                     <tbody className="divide-y divide-gray-700">
                                         {filteredOrders.map((order) => (
                                             <tr key={order.id}>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm sm:text-base">{order.id.substring(0, 8)}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm sm:text-base">{order.display_id || "M&M-" + order.id.substring(0, 8)}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm sm:text-base">{order.profiles?.email || 'N/A'}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm sm:text-base">{new Date(order.order_date).toLocaleDateString()}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm">₡{order.total_amount}</td>

@@ -8,6 +8,7 @@ export interface OrderItem {
 
 export interface Order {
   id: string;
+  display_id?: string; // New column for the formatted order ID
   order_date: string;
   total_amount: number;
   items: OrderItem[];
