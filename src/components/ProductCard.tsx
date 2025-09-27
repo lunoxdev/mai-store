@@ -18,6 +18,7 @@ const ProductCard = React.forwardRef<HTMLAnchorElement, ProductCardProps>(({ pro
                 <Image
                     src={product.images[0].url}
                     alt={product.images[0].alt || product.name}
+                    priority
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="rounded-lg absolute inset-0 transition-transform duration-300 group-hover:scale-110 object-cover"

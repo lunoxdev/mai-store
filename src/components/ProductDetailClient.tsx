@@ -21,22 +21,30 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
     const relatedProductsRefs = useRef<Array<HTMLAnchorElement | null>>([]);
 
     useEffect(() => {
-        gsap.fromTo(imageRef.current,
-            { opacity: 0, x: -50 },
-            { opacity: 1, x: 0, duration: 0.8, ease: "power3.out" }
-        );
-        gsap.fromTo(detailsRef.current,
-            { opacity: 0, y: 50 },
-            { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", delay: 0.2 }
-        );
-        gsap.fromTo(addToCartRef.current,
-            { opacity: 0, scale: 0.8 },
-            { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)", delay: 0.4 }
-        );
-        gsap.fromTo(relatedProductsRefs.current,
-            { opacity: 0, y: 20 },
-            { opacity: 1, y: 0, duration: 0.6, ease: "power3.out", delay: 0.8, stagger: 0.2 }
-        );
+        if (imageRef.current) {
+            gsap.fromTo(imageRef.current,
+                { opacity: 0, x: -50 },
+                { opacity: 1, x: 0, duration: 0.8, ease: "power3.out" }
+            );
+        }
+        if (detailsRef.current) {
+            gsap.fromTo(detailsRef.current,
+                { opacity: 0, y: 50 },
+                { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", delay: 0.2 }
+            );
+        }
+        if (addToCartRef.current) {
+            gsap.fromTo(addToCartRef.current,
+                { opacity: 0, scale: 0.8 },
+                { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)", delay: 0.4 }
+            );
+        }
+        if (relatedProductsRefs.current && relatedProductsRefs.current.length > 0) {
+            gsap.fromTo(relatedProductsRefs.current,
+                { opacity: 0, y: 20 },
+                { opacity: 1, y: 0, duration: 0.6, ease: "power3.out", delay: 0.8, stagger: 0.2 }
+            );
+        }
     }, [relatedProducts]);
 
     const toggleImageEnlargement = () => {
@@ -56,6 +64,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                         <Image
                             src={product.images[0].url}
                             alt={product.images[0].alt || product.name}
+                            priority
                             fill
                             className="object-cover w-full h-full inline-flex items-center justify-center rounded-xl px-2 py-2 text-sm font-medium text-gray-50 backdrop-blur-3xl"
                         />

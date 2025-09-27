@@ -61,7 +61,7 @@ export default function Home() {
         {!loading && products?.filter((product: Product) =>
           product.name.toLowerCase().includes(searchQuery.toLowerCase()),
         ).length === 0 && (
-            <p className="text-center col-span-full text-base sm:text-xl animate-pulse brightness-110">No products found</p>
+            <p className="text-center col-span-full text-base sm:text-xl animate-pulse brightness-110">No se encontraron productos</p>
           )}
       </section>
     </main>

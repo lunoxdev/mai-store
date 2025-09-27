@@ -290,7 +290,7 @@ export default function ProductListTable({ products, onEdit, onDelete, onProduct
                         {products.length === 0 && (
                             <tr>
                                 <td colSpan={7} className="py-4 px-2 sm:px-0 text-start sm:text-center col-span-full text-base sm:text-xl animate-pulse brightness-110">
-                                    No se encontraron productos.
+                                    No se encontraron productos
                                 </td>
                             </tr>
                         )}

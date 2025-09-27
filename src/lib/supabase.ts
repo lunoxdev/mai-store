@@ -1,10 +1,5 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "@/utils/supabase/client";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+// The Supabase client is created once and exported to be used throughout the app.
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error("Supabase URL and/or Anon Key are not set.");
-}
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient();
