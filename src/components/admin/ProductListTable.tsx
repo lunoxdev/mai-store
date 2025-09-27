@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Product, ProductImage } from "@/types/product";
 import { createClient } from "@/utils/supabase/client";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
 
 interface ProductListTableProps {
     products: Product[];
@@ -14,6 +16,7 @@ interface ProductListTableProps {
 
 export default function ProductListTable({ products, onEdit, onDelete, onProductSaved, searchTerm, setSearchTerm, onAddProductClick }: ProductListTableProps) {
     const supabase = createClient();
+    const productRefs = useRef<{ [key: string]: HTMLTableRowElement | null }>({});
     const [editingProductId, setEditingProductId] = useState<string | null>(null);
     const [editedProductName, setEditedProductName] = useState("");
     const [editedProductPrice, setEditedProductPrice] = useState("");
@@ -141,6 +144,15 @@ export default function ProductListTable({ products, onEdit, onDelete, onProduct
         setEditedProductAvailable(true);
     };
 
+    useEffect(() => {
+        if (products.length > 0) {
+            const elements = Object.values(productRefs.current).filter(Boolean);
+            gsap.to(elements,
+                { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: "power3.out" }
+            );
+        }
+    }, [products]);
+
     return (
         <div className="p-0 sm:p-3">
             <div className="flex justify-between items-center mb-4">
@@ -173,7 +185,7 @@ export default function ProductListTable({ products, onEdit, onDelete, onProduct
                     </thead>
                     <tbody className="text-sm font-light h-full">
                         {products.map((product) => (
-                            <tr key={product.id} className="border-b border-white/30 hover:bg-black/5">
+                            <tr key={product.id} className="border-b border-white/30 hover:bg-black/5 opacity-0 translate-y-5" ref={(el) => { productRefs.current[product.id] = el; }}>
                                 <td className="py-3 px-3 text-center flex items-center justify-center w-full">
                                     {product.images && product.images.length > 0 && (
                                         <img src={product.images[0].url} alt={product.images[0].alt || ""} className="w-14 h-14 sm:w-24 sm:h-24 object-cover rounded-md" />

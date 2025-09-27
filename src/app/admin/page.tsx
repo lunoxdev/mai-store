@@ -10,6 +10,8 @@ import AddProductForm from "@/components/admin/AddProductForm";
 import ProductListTable from "@/components/admin/ProductListTable";
 import Image from "next/image";
 import { Order } from "@/types/order";
+import { useRef } from "react";
+import { gsap } from "gsap";
 
 export default function AdminPage() {
     const supabase = createClient();
@@ -24,6 +26,7 @@ export default function AdminPage() {
     const [orders, setOrders] = useState<Order[]>([]);
     const [orderSearchTerm, setOrderSearchTerm] = useState(""); // For order ID search
     const [emailSearchTerm, setEmailSearchTerm] = useState(""); // For user email search
+    const orderRefs = useRef<{ [key: string]: HTMLTableRowElement | null }>({});
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -100,6 +103,31 @@ export default function AdminPage() {
         }
     }, [activeAdminTab, session, userRole]);
 
+    const filteredProducts = products.filter((product) =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const filteredOrders = orders.filter((order) => {
+        const orderIdMatch = order.id.toLowerCase().includes(orderSearchTerm.toLowerCase());
+        const emailMatch = (order.profiles?.email || '').toLowerCase().includes(emailSearchTerm.toLowerCase());
+        return orderIdMatch && emailMatch;
+    });
+
+    useEffect(() => {
+        if (activeAdminTab === 'orders' && filteredOrders.length > 0) {
+            const elements = Object.values(orderRefs.current).filter(Boolean);
+            gsap.to(elements,
+                { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: "power3.out" }
+            );
+        } else if (activeAdminTab !== 'orders') {
+            // Reset opacity and position when switching away from orders tab
+            const elementsToReset = Object.values(orderRefs.current).filter(Boolean);
+            if (elementsToReset.length > 0) {
+                gsap.set(elementsToReset, { opacity: 1, y: 0 });
+            }
+        }
+    }, [activeAdminTab, filteredOrders]);
+
     const handleDeleteProduct = async (productId: string) => {
         const { error } = await supabase.from("products").delete().eq("id", productId);
         if (error) {
@@ -122,16 +150,6 @@ export default function AdminPage() {
             <div className="min-h-screen flex items-center justify-center" />
         );
     }
-
-    const filteredProducts = products.filter((product) =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    const filteredOrders = orders.filter((order) => {
-        const orderIdMatch = order.id.toLowerCase().includes(orderSearchTerm.toLowerCase());
-        const emailMatch = (order.profiles?.email || '').toLowerCase().includes(emailSearchTerm.toLowerCase());
-        return orderIdMatch && emailMatch;
-    });
 
     return (
         <>
@@ -197,7 +215,7 @@ export default function AdminPage() {
                                     </thead>
                                     <tbody className="divide-y divide-gray-700">
                                         {filteredOrders.map((order) => (
-                                            <tr key={order.id}>
+                                            <tr key={order.id} className="opacity-0 translate-y-5" ref={(el) => { orderRefs.current[order.id] = el; }}>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm sm:text-base">{order.display_id || "M&M-" + order.id.substring(0, 8)}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm sm:text-base">{order.profiles?.email || 'N/A'}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm sm:text-base">{new Date(order.order_date).toLocaleDateString()}</td>
