@@ -238,6 +238,7 @@ export default function CartSidebar() {
                                                                 src={product.images[0].url}
                                                                 alt={product.images[0].alt || product.name}
                                                                 fill
+                                                                sizes="96px"
                                                                 className="object-cover w-full h-full inline-flex items-center justify-center rounded-md p-1"
                                                             />
                                                         </div>
